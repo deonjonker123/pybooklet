@@ -1,0 +1,73 @@
+{% if book %}
+<div class="random-result">
+    <h2>Your Random Pick</h2>
+    <div class="random-book-display">
+        <div class="random-book-cover">
+            {% if book.cover_url %}
+            <img src="{{ book.cover_url }}" alt="{{ book.title }}">
+            {% else %}
+            <div class="cover-placeholder" style="width: 140px; height: 210px; font-size: 4rem;">📕</div>
+            {% endif %}
+        </div>
+
+        <div class="random-book-details">
+            <h3>{{ book.title }}</h3>
+            <p class="book-author">by <a href="/author/{{ book.author }}">{{ book.author }}</a></p>
+
+            {% if book.series %}
+            <p class="book-series">
+                <a href="/series/{{ book.series }}">{{ book.series }} #{{ book.series_number }}</a>
+            </p>
+            {% endif %}
+
+            {% if book.genre %}
+            <p class="book-genre">
+                <strong>Genre:</strong> <a href="/genre/{{ book.genre }}">{{ book.genre }}</a>
+            </p>
+            {% endif %}
+
+            <p><strong>Pages:</strong> {{ book.page_count }}</p>
+
+            <p>
+                <strong>Status:</strong>
+                {% if status == 'library' %}
+                <span class="status-badge badge-library">Library</span>
+                {% elif status == 'tracking' %}
+                <span class="status-badge badge-tracking">Tracking</span>
+                {% elif status == 'completed' %}
+                <span class="status-badge badge-completed">Completed</span>
+                {% elif status == 'abandoned' %}
+                <span class="status-badge badge-abandoned">Abandoned</span>
+                {% endif %}
+            </p>
+
+            {% if book.synopsis %}
+            <div class="mt-lg">
+                <strong>Synopsis:</strong>
+                <p class="mt-sm">{{ book.synopsis }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="random-book-actions">
+        <a href="/book/{{ book.id }}" class="btn btn-secondary">👁️ View Details</a>
+
+        {% if status == 'library' %}
+        <form method="post" action="/library/read/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Start reading this book?')">
+            <button type="submit" class="btn btn-primary">📖 Read This Book</button>
+        </form>
+        {% endif %}
+
+        <button class="btn btn-secondary" hx-post="/random/select" hx-target="#randomResult" hx-swap="innerHTML">
+            🎲 Choose Another
+        </button>
+    </div>
+</div>
+{% else %}
+<div class="empty-state">
+    <p>😔 No books available to choose from!</p>
+    <p class="text-muted">Add some books to your library first.</p>
+    <a href="/library" class="btn btn-primary">Go to Library</a>
+</div>
+{% endif %}

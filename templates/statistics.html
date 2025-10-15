@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block title %}Statistics - Booklet{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="stats-controls">
+        <h1>📊 Reading Statistics</h1>
+        <div class="year-selector">
+            <label for="yearSelect">Year:</label>
+            <select id="yearSelect" onchange="window.location.href='/statistics?year=' + this.value">
+                <option value="0" {% if selected_year == 0 %}selected{% endif %}>All Time</option>
+                {% for year in available_years %}
+                <option value="{{ year }}" {% if selected_year == year %}selected{% endif %}>{{ year }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <!-- Raw Stats Summary -->
+    <div class="stats-summary">
+        <div class="summary-card">
+            <a href="/completed{% if selected_year != 0 %}?year={{ selected_year }}{% endif %}">
+                <h3>Books Completed</h3>
+                <div class="summary-number">{{ stats.completed_count }}</div>
+                <div class="summary-label">Books finished</div>
+            </a>
+        </div>
+
+        <div class="summary-card">
+            <a href="/completed{% if selected_year != 0 %}?year={{ selected_year }}{% endif %}">
+                <h3>Pages Read</h3>
+                <div class="summary-number">{{ "{:,}".format(stats.pages_read) }}</div>
+                <div class="summary-label">Total pages</div>
+            </a>
+        </div>
+
+        <div class="summary-card">
+            <a href="/abandoned">
+                <h3>Books Abandoned</h3>
+                <div class="summary-number">{{ stats.abandoned_count }}</div>
+                <div class="summary-label">Books set aside</div>
+            </a>
+        </div>
+
+        <div class="summary-card">
+            <a href="/completed{% if selected_year != 0 %}?year={{ selected_year }}{% endif %}">
+                <h3>Avg. Time to Finish</h3>
+                <div class="summary-number">{{ stats.avg_days_to_finish }}</div>
+                <div class="summary-label">Days on average</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="charts-grid">
+        <!-- Monthly Reading Chart (only for specific year, not all time) -->
+        {% if selected_year != 0 and monthly_data %}
+        <div class="chart-card">
+            <h2>Books & Pages Read by Month</h2>
+            <div id="monthlyChart"></div>
+        </div>
+        {% endif %}
+
+        <!-- Top Authors Chart -->
+        {% if top_authors %}
+        <div class="chart-card">
+            <h2>Top 10 Authors</h2>
+            <div id="authorsChart"></div>
+        </div>
+        {% endif %}
+
+        <!-- Top Genres Chart -->
+        {% if top_genres %}
+        <div class="chart-card">
+            <h2>Top 10 Genres</h2>
+            <div id="genresChart"></div>
+        </div>
+        {% endif %}
+
+        <!-- Rating Distribution Chart -->
+        {% if rating_dist %}
+        <div class="chart-card">
+            <h2>Rating Distribution</h2>
+            <div id="ratingsChart"></div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Plotly configuration for dark theme
+    const plotlyConfig = {
+        displayModeBar: false,
+        responsive: true,
+        transition: { duration: 200 },
+        hoverdistance: 20,
+    };
+
+    const plotlyLayout = {
+        paper_bgcolor: '#252526',
+        plot_bgcolor: '#252526',
+        font: {
+            color: '#e5e7eb',
+            family: 'Inter, sans-serif'
+        },
+        margin: { t: 30, r: 80, b: 80, l: 120 },
+        xaxis: {
+            gridcolor: '#2c2c2d',
+            linecolor: '#2c2c2d'
+        },
+        yaxis: {
+            gridcolor: '#2c2c2d',
+            linecolor: '#2c2c2d'
+        },
+        height: 600,
+        hoverlabel: {
+            bgcolor: '#252526',
+            bordercolor: '#161617',
+            font: {
+                color: '#e5e7eb',
+                family: 'Inter, sans-serif'
+            },
+        },
+    };
+
+    const selectedYear = {{ selected_year }};
+
+    {% if selected_year != 0 and monthly_data %}
+    // Monthly Reading Chart
+    (function() {
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const monthlyData = {{ monthly_data | tojson }};
+
+        // Create arrays for all 12 months
+        const booksData = new Array(12).fill(0);
+        const pagesData = new Array(12).fill(0);
+
+        monthlyData.forEach(item => {
+            const monthIndex = parseInt(item.month) - 1;
+            booksData[monthIndex] = item.books_completed;
+            pagesData[monthIndex] = item.pages_read;
+        });
+
+        const trace1 = {
+            x: months,
+            y: booksData,
+            name: 'Books',
+            type: 'bar',
+            mode: 'lines+markers',
+            marker: {
+                color: '#447595',
+                line: { color: '#34596d', width: 1 }
+            }
+        };
+
+        const trace2 = {
+            x: months,
+            y: pagesData,
+            name: 'Pages',
+            type: 'scatter',
+            mode: 'lines+markers',
+            line: { color: '#ce736c', width: 3 },
+            marker: { size: 8 },
+            yaxis: 'y2'
+        };
+
+        const layout = {
+            ...plotlyLayout,
+            yaxis: { title: 'Books', gridcolor: '#2c2c2d', linecolor: '#2c2c2d' },
+            yaxis2: {
+                title: 'Pages',
+                overlaying: 'y',
+                side: 'right',
+                gridcolor: '#2c2c2d',
+                linecolor: '#2c2c2d'
+            },
+            hovermode: 'x unified',
+            legend: {
+                x: 0.5,
+                y: -0.2,
+                xanchor: 'center',
+                yanchor: 'top',
+                orientation: 'h',
+                font: { color: '#e5e7eb' },
+                bgcolor: '#252526'
+            }
+        };
+
+        const plot = Plotly.newPlot('monthlyChart', [trace1, trace2], layout, plotlyConfig);
+
+        // Make clickable - goes to completed books for selected year
+        document.getElementById('monthlyChart').on('plotly_click', function(data) {
+            window.location.href = '/completed?year={{ selected_year }}';
+        });
+    })();
+    {% endif %}
+
+    {% if top_authors %}
+    // Top Authors Chart
+    (function() {
+        const authors = {{ top_authors | tojson }};
+
+        const trace = {
+            x: authors.map(a => a.book_count),
+            y: authors.map(a => a.author),
+            type: 'bar',
+            orientation: 'h',
+            marker: {
+                color: '#ce736c',
+                line: { color: '#733c3a', width: 1 }
+            }
+        };
+
+        const layout = {
+            ...plotlyLayout,
+            yaxis: { autorange: 'reversed' },
+            xaxis: { title: 'Books Completed' }
+        };
+
+        const plot = Plotly.newPlot('authorsChart', [trace], layout, plotlyConfig);
+
+        // Make clickable - filter by author AND year (or completed_only for All Time)
+        document.getElementById('authorsChart').on('plotly_click', function(data) {
+            const author = data.points[0].y;
+            const yearParam = selectedYear !== 0 ? `?year=${selectedYear}` : '?completed_only=true';
+            window.location.href = `/author/${encodeURIComponent(author)}${yearParam}`;
+        });
+    })();
+    {% endif %}
+
+    {% if top_genres %}
+    // Top Genres Chart
+    (function() {
+        const genres = {{ top_genres | tojson }};
+
+        const trace = {
+            x: genres.map(g => g.book_count),
+            y: genres.map(g => g.genre),
+            type: 'bar',
+            orientation: 'h',
+            marker: {
+                color: '#447595',
+                line: { color: '#34596d', width: 1 }
+            }
+        };
+
+        const layout = {
+            ...plotlyLayout,
+            yaxis: { autorange: 'reversed' },
+            xaxis: { title: 'Books Completed' }
+        };
+
+        const plot = Plotly.newPlot('genresChart', [trace], layout, plotlyConfig);
+
+        // Make clickable - filter by genre AND year (or completed_only for All Time)
+        document.getElementById('genresChart').on('plotly_click', function(data) {
+            const genre = data.points[0].y;
+            const yearParam = selectedYear !== 0 ? `?year=${selectedYear}` : '?completed_only=true';
+            window.location.href = `/genre/${encodeURIComponent(genre)}${yearParam}`;
+        });
+    })();
+    {% endif %}
+
+    {% if rating_dist %}
+    // Rating Distribution Chart
+    (function() {
+        const ratings = {{ rating_dist | tojson }};
+
+        const trace = {
+            x: ratings.map(r => '⭐'.repeat(r.rating)),
+            y: ratings.map(r => r.count),
+            type: 'bar',
+            marker: {
+                color: ['#ffdc73', '#ffd040', '#febf10', '#be9a30', '#a57d2d'],
+                line: { color: '#1e2442', width: 1 }
+            }
+        };
+
+        const layout = {
+            ...plotlyLayout,
+            xaxis: { title: 'Rating' },
+            yaxis: { title: 'Number of Books' }
+        };
+
+        const plot = Plotly.newPlot('ratingsChart', [trace], layout, plotlyConfig);
+
+        // Make clickable - filter by rating AND year
+        const ratingValues = ratings.map(r => r.rating);
+        document.getElementById('ratingsChart').on('plotly_click', function(data) {
+            const pointIndex = data.points[0].pointIndex;
+            const rating = ratingValues[pointIndex];
+            const yearParam = selectedYear !== 0 ? `&year=${selectedYear}` : '';
+            window.location.href = `/completed?rating=${rating}${yearParam}`;
+        });
+    })();
+    {% endif %}
+</script>
+{% endblock %}

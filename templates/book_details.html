@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.title }} - Booklet{% endblock %}
+
+{% block content %}
+<div class="book-details-container">
+    <div class="book-details-header">
+        <div class="book-details-cover">
+            {% if book.cover_url %}
+            <img src="{{ book.cover_url }}" alt="{{ book.title }}">
+            {% else %}
+            <div class="cover-placeholder" style="width: 180px; height: 270px; font-size: 5rem;">📕</div>
+            {% endif %}
+        </div>
+
+        <div class="book-details-info">
+            <h1>{{ book.title }}</h1>
+
+            <div class="book-meta">
+                <div class="book-meta-item">
+                    <span class="book-meta-label">Author:</span>
+                    <a href="/author/{{ book.author }}">{{ book.author }}</a>
+                </div>
+
+                {% if book.series %}
+                <div class="book-meta-item">
+                    <span class="book-meta-label">Series:</span>
+                    <a href="/series/{{ book.series }}">{{ book.series }} #{{ book.series_number }}</a>
+                </div>
+                {% endif %}
+
+                {% if book.genre %}
+                <div class="book-meta-item">
+                    <span class="book-meta-label">Genre:</span>
+                    <a href="/genre/{{ book.genre }}">{{ book.genre }}</a>
+                </div>
+                {% endif %}
+
+                <div class="book-meta-item">
+                    <span class="book-meta-label">Pages:</span>
+                    <span>{{ book.page_count }}</span>
+                </div>
+
+                <div class="book-meta-item">
+                    <span class="book-meta-label">Status:</span>
+                    {% if status == 'library' %}
+                    <span class="status-badge badge-library">Library</span>
+                    {% elif status == 'tracking' %}
+                    <span class="status-badge badge-tracking">Tracking</span>
+                    {% elif status == 'completed' %}
+                    <span class="status-badge badge-completed">Completed</span>
+                    {% elif status == 'abandoned' %}
+                    <span class="status-badge badge-abandoned">Abandoned</span>
+                    {% endif %}
+                </div>
+
+                <div class="book-meta-item">
+                    <span class="book-meta-label">Added:</span>
+                    <span>{{ book.date_added[:10] }}</span>
+                </div>
+            </div>
+
+            <div class="book-actions">
+                <button class="btn btn-success" onclick="openEditModal()">✏️ Edit</button>
+
+                {% if status == 'library' %}
+                <form method="post" action="/library/read/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Start reading this book?')">
+                    <button type="submit" class="btn btn-primary">📖 Read</button>
+                </form>
+                {% endif %}
+
+                {% if has_sessions %}
+                <a href="/sessions/{{ book.id }}" class="btn btn-primary">📊 Sessions</a>
+                {% endif %}
+
+                <form method="post" action="/library/delete/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Delete this book permanently?')">
+                    <button type="submit" class="btn btn-danger">🗑️ Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if book.synopsis %}
+    <div class="book-synopsis">
+        <h3>Synopsis</h3>
+        <p>{{ book.synopsis }}</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Edit Book Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Edit Book</h2>
+            <span class="close" onclick="closeModal('editModal')">&times;</span>
+        </div>
+        <form method="post" action="/library/update/{{ book.id }}">
+            <div class="form-group">
+                <label for="title">Title *</label>
+                <input type="text" id="title" name="title" value="{{ book.title }}" required>
+            </div>
+            <div class="form-group">
+                <label for="author">Author *</label>
+                <input type="text" id="author" name="author" value="{{ book.author }}" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="series">Series</label>
+                    <input type="text" id="series" name="series" value="{{ book.series or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="series_number">Series #</label>
+                    <input type="number" step="0.1" id="series_number" name="series_number" value="{{ book.series_number or '' }}">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="genre">Genre</label>
+                    <input type="text" id="genre" name="genre" value="{{ book.genre or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="page_count">Page Count *</label>
+                    <input type="number" id="page_count" name="page_count" value="{{ book.page_count }}" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="cover_url">Cover URL</label>
+                <input type="url" id="cover_url" name="cover_url" value="{{ book.cover_url or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="synopsis">Synopsis</label>
+                <textarea id="synopsis" name="synopsis" rows="4">{{ book.synopsis or '' }}</textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    function openEditModal() {
+        openModal('editModal');
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}

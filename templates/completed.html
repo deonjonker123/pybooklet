@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}Completed Books - Booklet{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1>Completed Books</h1>
+    </div>
+
+    <!-- Search and Sort -->
+    <div class="controls-bar">
+        <div class="search-box">
+            <input
+                type="text"
+                id="searchInput"
+                name="search"
+                placeholder="Search completed books..."
+                value="{{ search }}"
+                hx-get="/completed/search"
+                hx-trigger="keyup changed delay:300ms"
+                hx-target="#completedTableBody"
+                hx-include="#sortBy"
+            >
+        </div>
+        <div class="sort-box">
+            <label for="sortBy">Sort by:</label>
+            <select name="sort_by" id="sortBy" hx-get="/completed/search" hx-trigger="change" hx-target="#completedTableBody" hx-include="#searchInput">
+                <option value="completion_date" {% if sort_by == 'completion_date' %}selected{% endif %}>Completion Date</option>
+                <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Title</option>
+                <option value="author" {% if sort_by == 'author' %}selected{% endif %}>Author</option>
+                <option value="page_count" {% if sort_by == 'page_count' %}selected{% endif %}>Page Count</option>
+            </select>
+        </div>
+        <div class="results-count">
+            <span>{{ total_count }} books</span>
+        </div>
+    </div>
+
+    <!-- Books Table -->
+    <div class="table-container">
+        <table class="books-table">
+            <thead>
+                <tr>
+                    <th>Cover</th>
+                    <th>Title</th>
+                    <th>Series</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Pages</th>
+                    <th>Rating</th>
+                    <th>Completed</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="completedTableBody">
+                {% for book in books %}
+                <tr>
+                    <td class="cover-cell">
+                        {% if book.cover_url %}
+                        <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="table-cover">
+                        {% else %}
+                        <div class="table-cover-placeholder">📕</div>
+                        {% endif %}
+                    </td>
+                    <td><a href="/book/{{ book.id }}" class="book-link">{{ book.title }}</a></td>
+                    <td>
+                        {% if book.series %}
+                        <a href="/series/{{ book.series }}" class="series-link">{{ book.series }} #{{ book.series_number }}</a>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td><a href="/author/{{ book.author }}" class="author-link">{{ book.author }}</a></td>
+                    <td>
+                        {% if book.genre %}
+                        <a href="/genre/{{ book.genre }}" class="genre-link">{{ book.genre }}</a>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td>{{ book.page_count }}</td>
+                    <td>
+                        {% if book.rating %}
+                        <span class="rating-stars">{{ '⭐' * book.rating }}</span>
+                        {% else %}
+                        <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ book.completion_date[:10] }}</td>
+                    <td class="actions-cell">
+                        <button class="btn-icon" onclick="openEditModal({{ book.id }}, {{ book.rating or 0 }}, '{{ book.review or '' }}', '{{ book.start_date or '' }}', '{{ book.completion_date or '' }}')" title="Edit">✏️</button>
+                        <a href="/sessions/{{ book.id }}" class="btn-icon" title="Sessions">📊</a>
+                        <form method="post" action="/completed/remove/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Remove from completed and return to library?')">
+                            <button type="submit" class="btn-icon btn-danger" title="Remove">🔙</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        <div class="pagination-info">
+            Page {{ current_page }} of {{ total_pages }}
+        </div>
+        <div class="pagination-controls">
+            {% if current_page > 1 %}
+            <a href="/completed?page={{ current_page - 1 }}&limit={{ limit }}&sort_by={{ sort_by }}&search={{ search }}" class="btn btn-secondary">Previous</a>
+            {% endif %}
+
+            {% if current_page < total_pages %}
+            <a href="/completed?page={{ current_page + 1 }}&limit={{ limit }}&sort_by={{ sort_by }}&search={{ search }}" class="btn btn-secondary">Next</a>
+            {% endif %}
+        </div>
+        <div class="pagination-limit">
+            <label>Show:</label>
+            <select onchange="window.location.href='/completed?page=1&limit=' + this.value + '&sort_by={{ sort_by }}&search={{ search }}'">
+                <option value="50" {% if limit == 50 %}selected{% endif %}>50</option>
+                <option value="100" {% if limit == 100 %}selected{% endif %}>100</option>
+                <option value="200" {% if limit == 200 %}selected{% endif %}>200</option>
+            </select>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Edit Completed Book Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Edit Completed Book</h2>
+            <span class="close" onclick="closeModal('editModal')">&times;</span>
+        </div>
+        <form id="editForm" method="post">
+            <div class="form-group">
+                <label for="editRating">Rating (1-5 stars)</label>
+                <select id="editRating" name="rating">
+                    <option value="">No rating</option>
+                    <option value="1">⭐ 1 Star</option>
+                    <option value="2">⭐⭐ 2 Stars</option>
+                    <option value="3">⭐⭐⭐ 3 Stars</option>
+                    <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+                    <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editReview">Review</label>
+                <textarea id="editReview" name="review" rows="4"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="editStartDate">Start Date</label>
+                    <input type="date" id="editStartDate" name="start_date">
+                </div>
+                <div class="form-group">
+                    <label for="editCompletionDate">Completion Date</label>
+                    <input type="date" id="editCompletionDate" name="completion_date">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    function openEditModal(bookId, rating, review, startDate, completionDate) {
+        document.getElementById('editForm').action = `/completed/update/${bookId}`;
+        document.getElementById('editRating').value = rating || '';
+        document.getElementById('editReview').value = review || '';
+        document.getElementById('editStartDate').value = startDate ? startDate.substring(0, 10) : '';
+        document.getElementById('editCompletionDate').value = completionDate ? completionDate.substring(0, 10) : '';
+        openModal('editModal');
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}

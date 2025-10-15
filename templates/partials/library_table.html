@@ -1,0 +1,37 @@
+{% for book in books %}
+<tr>
+    <td class="cover-cell">
+        {% if book.cover_url %}
+        <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="table-cover">
+        {% else %}
+        <div class="table-cover-placeholder">📕</div>
+        {% endif %}
+    </td>
+    <td><a href="/book/{{ book.id }}" class="book-link">{{ book.title }}</a></td>
+    <td>
+        {% if book.series %}
+        <a href="/series/{{ book.series }}" class="series-link">{{ book.series }} #{{ book.series_number }}</a>
+        {% else %}
+        -
+        {% endif %}
+    </td>
+    <td><a href="/author/{{ book.author }}" class="author-link">{{ book.author }}</a></td>
+    <td>
+        {% if book.genre %}
+        <a href="/genre/{{ book.genre }}" class="genre-link">{{ book.genre }}</a>
+        {% else %}
+        -
+        {% endif %}
+    </td>
+    <td>{{ book.page_count }}</td>
+    <td class="actions-cell">
+        <button class="btn-icon" onclick="openEditModal({{ book.id }})" title="Edit">✏️</button>
+        <form method="post" action="/library/read/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Start reading this book?')">
+            <button type="submit" class="btn-icon" title="Read">📖</button>
+        </form>
+        <form method="post" action="/library/delete/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Delete this book permanently?')">
+            <button type="submit" class="btn-icon btn-danger" title="Delete">🗑️</button>
+        </form>
+    </td>
+</tr>
+{% endfor %}

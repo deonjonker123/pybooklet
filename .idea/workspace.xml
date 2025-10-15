@@ -1,17 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="4beb65f4-2998-4a98-b8ba-18053c98c895" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/pybooklet.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/migrate_add_sessions.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pybooklet.db" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/styles.css" afterDir="false" />
+    <list default="true" id="4beb65f4-2998-4a98-b8ba-18053c98c895" name="Changes" comment="Initial">
+      <change afterPath="$PROJECT_DIR$/static/favicon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/abandoned.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/author.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/book_details.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/completed.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/dashboard.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/genre.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/library.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/partials/abandoned_table.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/partials/completed_table.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/partials/library_table.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/partials/random_book.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/random.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/restore.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/series.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/sessions.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/statistics.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/tracker.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pybooklet.db" beforeDir="false" afterPath="$PROJECT_DIR$/pybooklet.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,6 +46,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "deonjonker123"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/deonjonker123/pybooklet.git",
+    "accountId": "694742aa-b33b-46aa-861a-2d0efa700238"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -43,12 +73,18 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/laragon/www/pybooklet",
+    "last_opened_file_path": "C:/laragon/www/pybooklet/static",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\laragon\www\pybooklet\static" />
       <recent name="C:\laragon\www\pybooklet" />
     </key>
   </component>
@@ -104,11 +140,24 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760554330161</updated>
-      <workItem from="1760554341105" duration="243000" />
+      <workItem from="1760554341105" duration="11140000" />
     </task>
+    <task id="LOCAL-00001" summary="Initial">
+      <option name="closed" value="true" />
+      <created>1760554677303</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1760554677303</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Initial" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial" />
   </component>
 </project>

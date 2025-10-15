@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Booklet{% endblock %}</title>
+    <link rel="icon" type="image/png" href="/static/favicon.png">
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a style="color: #e5e7eb" href="/">
+                    <img src="/static/logo.png" alt="Booklet" style="height: 32px; width: auto; vertical-align: middle;">
+                    Booklet
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/" class="{% if request.url.path == '/' %}active{% endif %}">Dashboard</a></li>
+                <li><a href="/library" class="{% if request.url.path.startswith('/library') %}active{% endif %}">Library</a></li>
+                <li><a href="/tracker" class="{% if request.url.path.startswith('/tracker') %}active{% endif %}">Tracker</a></li>
+                <li><a href="/completed" class="{% if request.url.path.startswith('/completed') %}active{% endif %}">Completed</a></li>
+                <li><a href="/abandoned" class="{% if request.url.path.startswith('/abandoned') %}active{% endif %}">Abandoned</a></li>
+                <li><a href="/statistics" class="{% if request.url.path.startswith('/statistics') %}active{% endif %}">Statistics</a></li>
+                <li><a href="/random" class="{% if request.url.path.startswith('/random') %}active{% endif %}">Random</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="/backup" class="btn-backup" title="Backup Database">💾 Backup</a>
+                <a href="/restore" class="btn-restore" title="Restore Database">🔄 Restore</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Booklet - Personal Reading Tracker</p>
+    </footer>
+
+    <!-- Global Scripts -->
+    <script>
+        // Confirm delete actions
+        function confirmDelete(message) {
+            return confirm(message || 'Are you sure you want to delete this?');
+        }
+
+        // Confirm navigation away with active timer
+        let timerActive = false;
+
+        window.addEventListener('beforeunload', function(e) {
+            if (timerActive) {
+                e.preventDefault();
+                e.returnValue = 'You have an active reading session. Are you sure you want to leave?';
+                return e.returnValue;
+            }
+        });
+
+        // Timer management functions
+        function setTimerActive(active) {
+            timerActive = active;
+        }
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

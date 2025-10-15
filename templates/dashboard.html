@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Booklet{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h1>Dashboard</h1>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">📚</div>
+            <div class="stat-content">
+                <h3>Total Books</h3>
+                <a href="/library"><p class="stat-number">{{ stats.total_books }}</p></a>
+                <span class="stat-label">In your collection</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📖</div>
+            <div class="stat-content">
+                <h3>Unread</h3>
+                <a href="/library"><p class="stat-number">{{ stats.library_count }}</p></a>
+                <span class="stat-label">Waiting to be read</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-content">
+                <h3>Completed</h3>
+                <a href="/completed"><p class="stat-number">{{ stats.completed_count }}</p></a>
+                <span class="stat-label">Books finished</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">❌</div>
+            <div class="stat-content">
+                <h3>Abandoned</h3>
+                <a href="/abandoned"><p class="stat-number">{{ stats.abandoned_count }}</p></a>
+                <span class="stat-label">Books set aside</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Currently Reading Section -->
+    <div class="currently-reading-section">
+        <h2>Currently Reading ({{ stats.tracking_count }})</h2>
+
+        {% if currently_reading %}
+            <div class="reading-grid">
+                {% for book in currently_reading %}
+                <div class="reading-card">
+                    <div class="reading-card-cover">
+                        {% if book.cover_url %}
+                        <img src="{{ book.cover_url }}" alt="{{ book.title }}">
+                        {% else %}
+                        <div class="cover-placeholder">📕</div>
+                        {% endif %}
+                    </div>
+                    <div class="reading-card-content">
+                        <h3><a href="/book/{{ book.id }}">{{ book.title }}</a></h3>
+                        <p class="book-author">by {{ book.author }}</p>
+                        {% if book.series %}
+                        <p class="book-series">
+                            <a href="/series/{{ book.series }}">{{ book.series }} #{{ book.series_number }}</a>
+                        </p>
+                        {% endif %}
+
+                        <div class="progress-section">
+                            <div class="progress-bar">
+                                {% set progress_percent = (book.current_page / book.page_count * 100) | int %}
+                                <div class="progress-fill" style="width: {{ progress_percent }}%"></div>
+                            </div>
+                            <p class="progress-text">{{ book.current_page }} / {{ book.page_count }} pages ({{ progress_percent }}%)</p>
+                        </div>
+
+                        <div class="reading-card-actions">
+                            <a href="/tracker" class="btn btn-primary">View Tracker</a>
+                            <a href="/book/{{ book.id }}" class="btn btn-secondary">Details</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>📭 No books currently being tracked</p>
+                <a href="/library" class="btn btn-primary">Browse Library</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="action-buttons">
+            <a href="/library" class="action-btn">
+                <span class="action-icon">📚</span>
+                <span>Browse Library</span>
+            </a>
+            <a href="/random" class="action-btn">
+                <span class="action-icon">🎲</span>
+                <span>Pick Random Book</span>
+            </a>
+            <a href="/statistics" class="action-btn">
+                <span class="action-icon">📊</span>
+                <span>View Statistics</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

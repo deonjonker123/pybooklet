@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+
+{% block title %}Library - Booklet{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1>Library</h1>
+        <button class="btn btn-primary" onclick="openModal('addBookModal')">+ Add Book</button>
+    </div>
+
+    <!-- Search and Sort -->
+    <div class="controls-bar">
+        <div class="search-box">
+            <input
+                type="text"
+                id="searchInput"
+                name="search"
+                placeholder="Search books..."
+                value="{{ search }}"
+                hx-get="/library/search"
+                hx-trigger="keyup changed delay:300ms"
+                hx-target="#booksTableBody"
+                hx-include="#sortBy"
+            >
+        </div>
+        <div class="sort-box">
+            <label for="sortBy">Sort by:</label>
+            <select name="sort_by" id="sortBy" hx-get="/library/search" hx-trigger="change" hx-target="#booksTableBody" hx-include="#searchInput">
+                <option value="date_added" {% if sort_by == 'date_added' %}selected{% endif %}>Date Added</option>
+                <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Title</option>
+                <option value="author" {% if sort_by == 'author' %}selected{% endif %}>Author</option>
+                <option value="page_count" {% if sort_by == 'page_count' %}selected{% endif %}>Page Count</option>
+            </select>
+        </div>
+        <div class="results-count">
+            <span>{{ total_count }} books</span>
+        </div>
+    </div>
+
+    <!-- Books Table -->
+    <div class="table-container">
+        <table class="books-table">
+            <thead>
+                <tr>
+                    <th>Cover</th>
+                    <th>Title</th>
+                    <th>Series</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Pages</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="booksTableBody">
+                {% for book in books %}
+                <tr>
+                    <td class="cover-cell">
+                        {% if book.cover_url %}
+                        <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="table-cover">
+                        {% else %}
+                        <div class="table-cover-placeholder">📕</div>
+                        {% endif %}
+                    </td>
+                    <td><a href="/book/{{ book.id }}" class="book-link">{{ book.title }}</a></td>
+                    <td>
+                        {% if book.series %}
+                        <a href="/series/{{ book.series }}" class="series-link">{{ book.series }} #{{ book.series_number }}</a>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td><a href="/author/{{ book.author }}" class="author-link">{{ book.author }}</a></td>
+                    <td>
+                        {% if book.genre %}
+                        <a href="/genre/{{ book.genre }}" class="genre-link">{{ book.genre }}</a>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td>{{ book.page_count }}</td>
+                    <td class="actions-cell">
+                        <button class="btn-icon" onclick="openEditModal({{ book.id }}, '{{ book.title }}', '{{ book.author }}', '{{ book.series or '' }}', {{ book.series_number or 'null' }}, '{{ book.genre or '' }}', {{ book.page_count }}, '{{ book.cover_url or '' }}', '{{ book.synopsis or '' }}')" title="Edit">✏️</button>
+                        <form method="post" action="/library/read/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Start reading this book?')">
+                            <button type="submit" class="btn-icon" title="Read">📖</button>
+                        </form>
+                        <form method="post" action="/library/delete/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Delete this book permanently?')">
+                            <button type="submit" class="btn-icon btn-danger" title="Delete">🗑️</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        <div class="pagination-info">
+            Page {{ current_page }} of {{ total_pages }}
+        </div>
+        <div class="pagination-controls">
+            {% if current_page > 1 %}
+            <a href="/library?page={{ current_page - 1 }}&limit={{ limit }}&sort_by={{ sort_by }}&search={{ search }}" class="btn btn-secondary">Previous</a>
+            {% endif %}
+
+            {% if current_page < total_pages %}
+            <a href="/library?page={{ current_page + 1 }}&limit={{ limit }}&sort_by={{ sort_by }}&search={{ search }}" class="btn btn-secondary">Next</a>
+            {% endif %}
+        </div>
+        <div class="pagination-limit">
+            <label>Show:</label>
+            <select onchange="window.location.href='/library?page=1&limit=' + this.value + '&sort_by={{ sort_by }}&search={{ search }}'">
+                <option value="50" {% if limit == 50 %}selected{% endif %}>50</option>
+                <option value="100" {% if limit == 100 %}selected{% endif %}>100</option>
+                <option value="200" {% if limit == 200 %}selected{% endif %}>200</option>
+            </select>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Edit Book Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Edit Book</h2>
+            <span class="close" onclick="closeModal('editModal')">&times;</span>
+        </div>
+        <form id="editForm" method="post">
+            <div class="form-group">
+                <label for="editTitle">Title *</label>
+                <input type="text" id="editTitle" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="editAuthor">Author *</label>
+                <input type="text" id="editAuthor" name="author" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="editSeries">Series</label>
+                    <input type="text" id="editSeries" name="series">
+                </div>
+                <div class="form-group">
+                    <label for="editSeriesNumber">Series #</label>
+                    <input type="number" step="0.1" id="editSeriesNumber" name="series_number">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="editGenre">Genre</label>
+                    <input type="text" id="editGenre" name="genre">
+                </div>
+                <div class="form-group">
+                    <label for="editPageCount">Page Count *</label>
+                    <input type="number" id="editPageCount" name="page_count" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="editCoverUrl">Cover URL</label>
+                <input type="url" id="editCoverUrl" name="cover_url">
+            </div>
+            <div class="form-group">
+                <label for="editSynopsis">Synopsis</label>
+                <textarea id="editSynopsis" name="synopsis" rows="4"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="addBookModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Add New Book</h2>
+            <span class="close" onclick="closeModal('addBookModal')">&times;</span>
+        </div>
+        <form method="post" action="/library/add">
+            <div class="form-group">
+                <label for="title">Title *</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="author">Author *</label>
+                <input type="text" id="author" name="author" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="series">Series</label>
+                    <input type="text" id="series" name="series">
+                </div>
+                <div class="form-group">
+                    <label for="series_number">Series #</label>
+                    <input type="number" step="0.1" id="series_number" name="series_number">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="genre">Genre</label>
+                    <input type="text" id="genre" name="genre">
+                </div>
+                <div class="form-group">
+                    <label for="page_count">Page Count *</label>
+                    <input type="number" id="page_count" name="page_count" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="cover_url">Cover URL</label>
+                <input type="url" id="cover_url" name="cover_url">
+            </div>
+            <div class="form-group">
+                <label for="synopsis">Synopsis</label>
+                <textarea id="synopsis" name="synopsis" rows="4"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('addBookModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add Book</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    function openEditModal(bookId, title, author, series, seriesNumber, genre, pageCount, coverUrl, synopsis) {
+        document.getElementById('editForm').action = `/library/update/${bookId}`;
+        document.getElementById('editTitle').value = title || '';
+        document.getElementById('editAuthor').value = author || '';
+        document.getElementById('editSeries').value = series || '';
+        document.getElementById('editSeriesNumber').value = seriesNumber || '';
+        document.getElementById('editGenre').value = genre || '';
+        document.getElementById('editPageCount').value = pageCount || '';
+        document.getElementById('editCoverUrl').value = coverUrl || '';
+        document.getElementById('editSynopsis').value = synopsis || '';
+        openModal('editModal');
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}

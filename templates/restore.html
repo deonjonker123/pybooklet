@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Restore Database - Booklet{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1>🔄 Restore Database</h1>
+    </div>
+
+    <div class="restore-container" style="max-width: 600px; margin: 0 auto;">
+        <div class="warning-box" style="background: rgba(239, 68, 68, 0.15); border: 1px solid var(--accent-red); border-radius: var(--radius-lg); padding: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+            <h3 style="color: var(--accent-red); margin-bottom: var(--spacing-sm);">⚠️ Warning</h3>
+            <p style="color: var(--text-secondary); margin: 0;">Restoring will replace your current database. A backup of your current database will be created automatically before restore.</p>
+        </div>
+
+        <form method="post" action="/restore" enctype="multipart/form-data" onsubmit="return confirm('Are you sure you want to restore from this backup? Your current database will be backed up first.')">
+            <div class="form-group">
+                <label for="file">Select Backup File (.db)</label>
+                <input type="file" id="file" name="file" accept=".db" required style="width: 100%; padding: var(--spacing-md); border: 1px solid var(--border-color); border-radius: var(--radius-md); background: var(--surface); color: var(--text-primary);">
+            </div>
+
+            <div style="display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-xl);">
+                <a href="/" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Restore Database</button>
+            </div>
+        </form>
+
+        <div style="margin-top: var(--spacing-2xl); padding-top: var(--spacing-xl); border-top: 1px solid var(--border-subtle);">
+            <h3>How to Restore:</h3>
+            <ol style="color: var(--text-secondary); line-height: 1.8;">
+                <li>Click "Choose File" and select your backup .db file</li>
+                <li>Click "Restore Database"</li>
+                <li>Your current database will be backed up automatically</li>
+                <li>The backup will replace your current database</li>
+                <li>You'll be redirected to the dashboard</li>
+            </ol>
+        </div>
+    </div>
+</div>
+{% endblock %}

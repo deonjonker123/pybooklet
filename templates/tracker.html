@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}Reading Tracker - Booklet{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1>Reading Tracker</h1>
+        <span class="text-muted">{{ books|length }} book(s) tracking</span>
+    </div>
+
+    {% if books %}
+        <div class="tracker-rows">
+            {% for book in books %}
+            <div class="tracker-row">
+                <div class="tracker-row-cover">
+                    {% if book.cover_url %}
+                    <img src="{{ book.cover_url }}" alt="{{ book.title }}">
+                    {% else %}
+                    <div class="cover-placeholder-large">📕</div>
+                    {% endif %}
+                </div>
+
+                <div class="tracker-row-content">
+                    <div class="tracker-row-info">
+                        <h3><a href="/book/{{ book.id }}">{{ book.title }}</a></h3>
+                        <p class="book-author">by <a href="/author/{{ book.author }}">{{ book.author }}</a></p>
+                        <div class="book-meta-row">
+                            {% if book.series %}
+                            <span class="book-series">
+                                <a href="/series/{{ book.series }}">{{ book.series }} #{{ book.series_number }}</a>
+                            </span>
+                            {% endif %}
+                            {% if book.genre %}
+                            <span class="book-genre">
+                                <a href="/genre/{{ book.genre }}">{{ book.genre }}</a>
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="tracker-row-progress">
+                        <div class="progress-bar">
+                            {% set progress_percent = (book.current_page / book.page_count * 100) | int %}
+                            <div class="progress-fill" style="width: {{ progress_percent }}%"></div>
+                        </div>
+                        <div class="progress-details">
+                            <span class="progress-text">{{ progress_percent }}% complete</span>
+                            <form method="post" action="/tracker/update-progress/{{ book.id }}" class="progress-input-group">
+                                <input type="number" name="current_page" value="{{ book.current_page }}" min="0" max="{{ book.page_count }}" required>
+                                <span>/ {{ book.page_count }} pages</span>
+                                <button type="submit" class="btn btn-secondary">Update</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="tracker-row-actions">
+                        <button class="btn btn-timer" onclick="openTimerModal({{ book.id }}, {{ book.current_page }}, {{ book.page_count }})">⏱️ Timer</button>
+                        <a href="/sessions/{{ book.id }}" class="btn btn-primary">📊 Sessions</a>
+                        <button class="btn btn-success" onclick="openCompleteModal({{ book.id }})">✅ Complete</button>
+                        <button class="btn btn-danger" onclick="openAbandonModal({{ book.id }}, {{ book.current_page }})">❌ Abandon</button>
+                        <form method="post" action="/tracker/remove/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Remove this book from tracker?')">
+                            <button type="submit" class="btn btn-secondary">🔙 Remove</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>📭 No books currently being tracked</p>
+            <a href="/library" class="btn btn-primary">Browse Library</a>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Timer Modal -->
+<div id="timerModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Reading Session</h2>
+            <span class="close" onclick="closeTimerModal()">&times;</span>
+        </div>
+        <div class="timer-modal-content">
+            <div class="timer-display" id="timerDisplay">00:00:00</div>
+            <div class="timer-page-input">
+                <label for="currentPage">Current Page:</label>
+                <input type="number" id="currentPage" name="current_page" required>
+                <span id="maxPageDisplay"></span>
+            </div>
+            <div class="timer-controls">
+                <button class="btn btn-danger btn-lg" onclick="stopTimer()">⏹️ Stop Session</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Complete Modal -->
+<div id="completeModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Complete Book</h2>
+            <span class="close" onclick="closeModal('completeModal')">&times;</span>
+        </div>
+        <form id="completeForm" method="post">
+            <div class="form-group">
+                <label for="rating">Rating (1-5 stars)</label>
+                <select id="rating" name="rating">
+                    <option value="">No rating</option>
+                    <option value="1">⭐ 1 Star</option>
+                    <option value="2">⭐⭐ 2 Stars</option>
+                    <option value="3">⭐⭐⭐ 3 Stars</option>
+                    <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+                    <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="review">Review (optional)</label>
+                <textarea id="review" name="review" rows="4" placeholder="What did you think?"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('completeModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Complete Book</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Abandon Modal -->
+<div id="abandonModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Abandon Book</h2>
+            <span class="close" onclick="closeModal('abandonModal')">&times;</span>
+        </div>
+        <form id="abandonForm" method="post">
+            <div class="form-group">
+                <label for="pageAtAbandonment">Page at Abandonment</label>
+                <input type="number" id="pageAtAbandonment" name="page_at_abandonment" required>
+            </div>
+            <div class="form-group">
+                <label for="reason">Reason (optional)</label>
+                <textarea id="reason" name="reason" rows="3" placeholder="Why did you stop reading?"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('abandonModal')">Cancel</button>
+                <button type="submit" class="btn btn-danger">Abandon Book</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    let timerInterval;
+    let startTime;
+    let currentBookId;
+    let startPage;
+
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    function openTimerModal(bookId, current, max) {
+        currentBookId = bookId;
+        startPage = current;
+        document.getElementById('currentPage').value = current;
+        document.getElementById('currentPage').max = max;
+        document.getElementById('maxPageDisplay').textContent = ` / ${max}`;
+
+        startTime = new Date();
+        setTimerActive(true);
+
+        timerInterval = setInterval(updateTimer, 1000);
+        openModal('timerModal');
+    }
+
+    function closeTimerModal() {
+        if (confirm('Are you sure? Your session progress will be lost.')) {
+            clearInterval(timerInterval);
+            setTimerActive(false);
+            closeModal('timerModal');
+        }
+    }
+
+    function updateTimer() {
+        const now = new Date();
+        const diff = Math.floor((now - startTime) / 1000);
+
+        const hours = Math.floor(diff / 3600);
+        const minutes = Math.floor((diff % 3600) / 60);
+        const seconds = diff % 60;
+
+        document.getElementById('timerDisplay').textContent =
+            `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    function stopTimer() {
+        const endTime = new Date();
+        const endPage = parseInt(document.getElementById('currentPage').value);
+
+        if (endPage < startPage) {
+            alert('End page cannot be less than start page!');
+            return;
+        }
+
+        clearInterval(timerInterval);
+        setTimerActive(false);
+
+        const durationSeconds = Math.floor((endTime - startTime) / 1000);
+
+        // Create form and submit
+        const form = document.createElement('form');
+        form.method = 'post';
+        form.action = `/tracker/session/stop/${currentBookId}`;
+
+        const fields = {
+            start_time: startTime.toISOString(),
+            end_time: endTime.toISOString(),
+            duration_seconds: durationSeconds,
+            start_page: startPage,
+            end_page: endPage
+        };
+
+        for (const [key, value] of Object.entries(fields)) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = value;
+            form.appendChild(input);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    function openCompleteModal(bookId) {
+        document.getElementById('completeForm').action = `/tracker/complete/${bookId}`;
+        openModal('completeModal');
+    }
+
+    function openAbandonModal(bookId, currentPage) {
+        document.getElementById('abandonForm').action = `/tracker/abandon/${bookId}`;
+        document.getElementById('pageAtAbandonment').value = currentPage;
+        openModal('abandonModal');
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}

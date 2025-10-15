@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Abandoned Books - Booklet{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1>Abandoned Books</h1>
+    </div>
+
+    <!-- Search and Sort -->
+    <div class="controls-bar">
+        <div class="search-box">
+            <input
+                type="text"
+                id="searchInput"
+                name="search"
+                placeholder="Search abandoned books..."
+                value="{{ search }}"
+                hx-get="/abandoned/search"
+                hx-trigger="keyup changed delay:300ms"
+                hx-target="#abandonedTableBody"
+                hx-include="#sortBy"
+            >
+        </div>
+        <div class="sort-box">
+            <label for="sortBy">Sort by:</label>
+            <select name="sort_by" id="sortBy" hx-get="/abandoned/search" hx-trigger="change" hx-target="#abandonedTableBody" hx-include="#searchInput">
+                <option value="abandonment_date" {% if sort_by == 'abandonment_date' %}selected{% endif %}>Abandonment Date</option>
+                <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Title</option>
+                <option value="author" {% if sort_by == 'author' %}selected{% endif %}>Author</option>
+                <option value="page_count" {% if sort_by == 'page_count' %}selected{% endif %}>Page Count</option>
+            </select>
+        </div>
+        <div class="results-count">
+            <span>{{ total_count }} books</span>
+        </div>
+    </div>
+
+    <!-- Books Table -->
+    <div class="table-container">
+        <table class="books-table">
+            <thead>
+                <tr>
+                    <th>Cover</th>
+                    <th>Title</th>
+                    <th>Series</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Total Pages</th>
+                    <th>Page at Abandon</th>
+                    <th>Abandoned</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="abandonedTableBody">
+                {% for book in books %}
+                <tr>
+                    <td class="cover-cell">
+                        {% if book.cover_url %}
+                        <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="table-cover">
+                        {% else %}
+                        <div class="table-cover-placeholder">📕</div>
+                        {% endif %}
+                    </td>
+                    <td><a href="/book/{{ book.id }}" class="book-link">{{ book.title }}</a></td>
+                    <td>
+                        {% if book.series %}
+                        <a href="/series/{{ book.series }}" class="series-link">{{ book.series }} #{{ book.series_number }}</a>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td><a href="/author/{{ book.author }}" class="author-link">{{ book.author }}</a></td>
+                    <td>
+                        {% if book.genre %}
+                        <a href="/genre/{{ book.genre }}" class="genre-link">{{ book.genre }}</a>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td>{{ book.page_count }}</td>
+                    <td>
+                        {% set abandon_percent = (book.page_at_abandonment / book.page_count * 100) | int %}
+                        {{ book.page_at_abandonment }} <span class="text-muted">({{ abandon_percent }}%)</span>
+                    </td>
+                    <td>{{ book.abandonment_date[:10] }}</td>
+                    <td class="actions-cell">
+                        <button class="btn-icon" onclick="openEditModal({{ book.id }}, {{ book.page_at_abandonment }}, '{{ book.reason or '' }}', '{{ book.start_date or '' }}', '{{ book.abandonment_date or '' }}')" title="Edit">✏️</button>
+                        <a href="/sessions/{{ book.id }}" class="btn-icon" title="Sessions">📊</a>
+                        <form method="post" action="/abandoned/remove/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Remove from abandoned and return to library?')">
+                            <button type="submit" class="btn-icon btn-danger" title="Remove">🔙</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        <div class="pagination-info">
+            Page {{ current_page }} of {{ total_pages }}
+        </div>
+        <div class="pagination-controls">
+            {% if current_page > 1 %}
+            <a href="/abandoned?page={{ current_page - 1 }}&limit={{ limit }}&sort_by={{ sort_by }}&search={{ search }}" class="btn btn-secondary">Previous</a>
+            {% endif %}
+
+            {% if current_page < total_pages %}
+            <a href="/abandoned?page={{ current_page + 1 }}&limit={{ limit }}&sort_by={{ sort_by }}&search={{ search }}" class="btn btn-secondary">Next</a>
+            {% endif %}
+        </div>
+        <div class="pagination-limit">
+            <label>Show:</label>
+            <select onchange="window.location.href='/abandoned?page=1&limit=' + this.value + '&sort_by={{ sort_by }}&search={{ search }}'">
+                <option value="50" {% if limit == 50 %}selected{% endif %}>50</option>
+                <option value="100" {% if limit == 100 %}selected{% endif %}>100</option>
+                <option value="200" {% if limit == 200 %}selected{% endif %}>200</option>
+            </select>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Edit Abandoned Book Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Edit Abandoned Book</h2>
+            <span class="close" onclick="closeModal('editModal')">&times;</span>
+        </div>
+        <form id="editForm" method="post">
+            <div class="form-group">
+                <label for="editPageAtAbandonment">Page at Abandonment</label>
+                <input type="number" id="editPageAtAbandonment" name="page_at_abandonment" required>
+            </div>
+            <div class="form-group">
+                <label for="editReason">Reason</label>
+                <textarea id="editReason" name="reason" rows="4" placeholder="Why did you stop reading?"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="editStartDate">Start Date</label>
+                    <input type="date" id="editStartDate" name="start_date">
+                </div>
+                <div class="form-group">
+                    <label for="editAbandonmentDate">Abandonment Date</label>
+                    <input type="date" id="editAbandonmentDate" name="abandonment_date">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    function openEditModal(bookId, pageAtAbandonment, reason, startDate, abandonmentDate) {
+        document.getElementById('editForm').action = `/abandoned/update/${bookId}`;
+        document.getElementById('editPageAtAbandonment').value = pageAtAbandonment || '';
+        document.getElementById('editReason').value = reason || '';
+        document.getElementById('editStartDate').value = startDate ? startDate.substring(0, 10) : '';
+        document.getElementById('editAbandonmentDate').value = abandonmentDate ? abandonmentDate.substring(0, 10) : '';
+        openModal('editModal');
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}
