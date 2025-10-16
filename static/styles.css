@@ -3,45 +3,45 @@
    ============================================================================ */
 
 :root {
-    /* Dark Color Palette */
-    --bg-primary: #161617;
-    --bg-secondary: #252526;
-    --bg-tertiary: #2c2c2d;
-    --surface: #383838;
-    --surface-hover: #40403f;
+    /* Dark Color Palette - Darker Greys */
+    --bg-primary: #0d0d0e;
+    --bg-secondary: #141416;
+    --bg-tertiary: #1a1a1c;
+    --surface: #1f1f21;
+    --surface-hover: #262628;
 
-    /* Accent Colors with Gradients */
-    --accent-primary: #73a8ac;
-    --accent-primary-dark: #0f6c7a;
-    --accent-secondary: #b6e1dc;
-    --accent-cyan: #6bc8c4;
-    --accent-pink: #e19abc;
-    --accent-green: #81c780;
-    --accent-red: #f17f67;
-    --accent-orange: #fade73;
+    /* Accent Colors */
+    --accent-primary: #6ba3bf;
+    --accent-primary-dark: #4a7d96;
+    --accent-secondary: #8fc4d9;
+    --accent-cyan: #4dd4d4;
+    --accent-pink: #ff6b6b;
+    --accent-green: #6bcc70;
+    --accent-red: #ff6b6b;
+    --accent-orange: #ff9f4a;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, #73a8ac 0%, #b6e1dc 100%);
-    --gradient-secondary: linear-gradient(135deg, #b6e1dc 0%, #e6f5f9 100%);
-    --gradient-danger: linear-gradient(135deg, #f17f67 0%, #fbc6ac 100%);
-    --gradient-success: linear-gradient(135deg, #81c780 0%, #d3e9c9 100%);
-    --gradient-dark: linear-gradient(135deg, #2c2c2d 0%, #40403f 100%);
+    --gradient-primary: linear-gradient(135deg, #6ba3bf 0%, #8fc4d9 100%);
+    --gradient-secondary: linear-gradient(135deg, #8fc4d9 0%, #c4e3f0 100%);
+    --gradient-danger: linear-gradient(135deg, #ff6b6b 0%, #ff9f9f 100%);
+    --gradient-success: linear-gradient(135deg, #6bcc70 0%, #a3e6a8 100%);
+    --gradient-dark: linear-gradient(135deg, #1a1a1c 0%, #262628 100%);
 
     /* Text Colors */
-    --text-primary: #e5e7eb;
-    --text-secondary: #9ca3af;
-    --text-muted: #6b7280;
-    --text-inverse: #161617;
+    --text-primary: #eff1f3;
+    --text-secondary: #b0b5ba;
+    --text-muted: #787d85;
+    --text-inverse: #0d0d0e;
 
     /* Border & Dividers */
-    --border-color: #3a3a3a;
-    --border-subtle: #5e5f5f;
+    --border-color: #2a2a2c;
+    --border-subtle: #3d3d40;
 
     /* Shadows */
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.5);
-    --shadow-glow: 0 0 20px rgba(230, 245, 249, 0.3);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.6);
+    --shadow-glow: 0 0 20px rgba(107, 163, 191, 0.25);
 
     /* Compact Spacing */
     --spacing-xs: 0.25rem;

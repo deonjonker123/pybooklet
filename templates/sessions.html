@@ -17,8 +17,7 @@
             <div class="table-cover-placeholder">📕</div>
             {% endif %}
             <div>
-                <h1>📊 Reading Sessions</h1>
-                <p><a href="/book/{{ book.id }}">{{ book.title }}</a> by {{ book.author }}</p>
+                <p>Sessions for: <a href="/book/{{ book.id }}">{{ book.title }}</a> by {{ book.author }}</p>
                 <span class="status-badge badge-{{ status }}">{{ status.title() }}</span>
             </div>
         </div>
