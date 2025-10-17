@@ -4,15 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4beb65f4-2998-4a98-b8ba-18053c98c895" name="Changes" comment="Style updates">
+    <list default="true" id="4beb65f4-2998-4a98-b8ba-18053c98c895" name="Changes" comment="Bug fixes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pybooklet.db" beforeDir="false" afterPath="$PROJECT_DIR$/pybooklet.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/abandoned.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/abandoned.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/completed.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/completed.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/library.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/library.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/partials/abandoned_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/abandoned_table.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/partials/completed_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/completed_table.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/partials/library_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/library_table.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +91,7 @@
       <workItem from="1760637216633" duration="1324000" />
       <workItem from="1760725308303" duration="578000" />
       <workItem from="1760725956481" duration="407000" />
-      <workItem from="1760739859732" duration="1811000" />
+      <workItem from="1760739859732" duration="2733000" />
     </task>
     <task id="LOCAL-00001" summary="Initial">
       <option name="closed" value="true" />
@@ -149,7 +149,23 @@
       <option name="project" value="LOCAL" />
       <updated>1760726353747</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Bug fixes">
+      <option name="closed" value="true" />
+      <created>1760741805186</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1760741805186</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Bug fixes">
+      <option name="closed" value="true" />
+      <created>1760741814334</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1760741814334</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -160,6 +176,7 @@
     <MESSAGE value="Basics complete" />
     <MESSAGE value="Small fix" />
     <MESSAGE value="Style updates" />
-    <option name="LAST_COMMIT_MESSAGE" value="Style updates" />
+    <MESSAGE value="Bug fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bug fixes" />
   </component>
 </project>

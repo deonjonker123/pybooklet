@@ -41,17 +41,6 @@
     <!-- Books Table -->
     <div class="table-container">
         <table class="books-table">
-            <thead>
-                <tr>
-                    <th>Cover</th>
-                    <th>Title</th>
-                    <th>Series</th>
-                    <th>Author</th>
-                    <th>Genre</th>
-                    <th>Pages</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
             <tbody id="booksTableBody">
                 {% for book in books %}
                 <tr>
@@ -62,13 +51,16 @@
                         <div class="table-cover-placeholder">📕</div>
                         {% endif %}
                     </td>
-                    <td><a href="/book/{{ book.id }}" class="book-link">{{ book.title }}</a></td>
-                    <td>
-                        {% if book.series %}
-                        <a href="/series/{{ book.series }}" class="series-link">{{ book.series }} #{{ book.series_number }}</a>
-                        {% else %}
-                        -
-                        {% endif %}
+                     <td>
+                        <a href="/book/{{ book.id }}" class="book-link">{{ book.title }}</a>
+                        <br>
+                        <small>
+                            {% if book.series %}
+                            <a href="/series/{{ book.series }}" class="series-link">{{ book.series }} #{{ book.series_number }}</a>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </small>
                     </td>
                     <td><a href="/author/{{ book.author }}" class="author-link">{{ book.author }}</a></td>
                     <td>

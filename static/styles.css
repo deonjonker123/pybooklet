@@ -522,10 +522,14 @@ p {
     color: var(--accent-primary);
 }
 
-.series-link,
+.series-link {
+    color: var(--text-primary);
+    font-size: 0.75rem;
+}
+
 .author-link,
 .genre-link {
-    color: var(--accent-cyan);
+    color: var(--text-primary);
     font-size: 0.85rem;
 }
 

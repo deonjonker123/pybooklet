@@ -7,13 +7,16 @@
         <div class="table-cover-placeholder">📕</div>
         {% endif %}
     </td>
-    <td><a href="/book/{{ book.id }}" class="book-link">{{ book.title }}</a></td>
     <td>
-        {% if book.series %}
-        <a href="/series/{{ book.series }}" class="series-link">{{ book.series }} #{{ book.series_number }}</a>
-        {% else %}
-        -
-        {% endif %}
+        <a href="/book/{{ book.id }}" class="book-link">{{ book.title }}</a>
+        <br>
+        <small>
+            {% if book.series %}
+            <a href="/series/{{ book.series }}" class="series-link">{{ book.series }} #{{ book.series_number }}</a>
+            {% else %}
+            -
+            {% endif %}
+        </small>
     </td>
     <td><a href="/author/{{ book.author }}" class="author-link">{{ book.author }}</a></td>
     <td>
@@ -23,7 +26,7 @@
         -
         {% endif %}
     </td>
-    <!--<td>{{ book.page_count }}</td>-->
+    <td>{{ book.page_count }}</td>
     <td>
         {% if book.rating %}
         <span class="rating-stars">{{ '⭐' * book.rating }}</span>
@@ -38,6 +41,7 @@
             <span class="text-muted">-</span>
         {% endif %}
     </td>
+    <td>{{ book.start_date[:10] }}</td>
     <td>{{ book.completion_date[:10] }}</td>
     <td class="actions-cell">
         <button class="btn-icon" onclick="openEditModal({{ book.id }}, {{ book.rating or 0 }}, '{{ (book.review or '')|replace("'", "\\'") }}', '{{ book.start_date or '' }}', '{{ book.completion_date or '' }}')" title="Edit">✏️</button>
