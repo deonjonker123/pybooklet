@@ -193,6 +193,7 @@
     });
 
     const minutesPerDay = daysOfWeek.map(day => dayData[day].minutes);
+    const pagesPerDay = daysOfWeek.map(day => dayData[day].pages);
 
     // Minutes bar chart (trace1 - BARS FIRST)
     const trace1 = {
@@ -201,17 +202,33 @@
         name: 'Minutes',
         type: 'bar',
         marker: {
-            color: '#34596d',
+            color: '#447595',
             line: { color: '#34596d', width: 1 }
         },
         hoverlabel: {
-            bgcolor: '#6f888c',
-            font: { color: '#1e2442' }
+            bgcolor: '#252526',
+            font: { color: '#e5e7eb' }
         }
     };
 
-    // Pages per hour line chart (trace2 - LINE SECOND)
+    // Pages read line chart (trace2 - LINE SECOND)
     const trace2 = {
+        x: daysOfWeek,
+        y: pagesPerDay,
+        name: 'Pages Read',
+        type: 'scatter',
+        mode: 'lines+markers',
+        line: { color: '#6bcc70', width: 3 },
+        marker: { size: 8 },
+        yaxis: 'y2',
+        hoverlabel: {
+            bgcolor: '#252526',
+            font: { color: '#e5e7eb' }
+        }
+    };
+
+    // Pages per hour line chart (trace3 - LINE THIRD)
+    const trace3 = {
         x: daysOfWeek,
         y: pagesPerHour,
         name: 'Pages/Hour',
@@ -221,8 +238,8 @@
         marker: { size: 8 },
         yaxis: 'y2',
         hoverlabel: {
-            bgcolor: '#6f888c',
-            font: { color: '#1e2442' }
+            bgcolor: '#252526',
+            font: { color: '#e5e7eb' }
         }
     };
 
@@ -237,14 +254,14 @@
         yaxis: {
             title: 'Minutes',
             gridcolor: '#2c2c2d',
-            linecolor: '#2d3452'
+            linecolor: '#2c2c2d'
         },
         yaxis2: {
-            title: 'Pages per Hour',
+            title: 'Pages Read / Pages per Hour',
             overlaying: 'y',
             side: 'right',
             gridcolor: '#2c2c2d',
-            linecolor: '#2d3452'
+            linecolor: '#2c2c2d'
         },
         hovermode: 'x unified',
         showlegend: true,
@@ -252,7 +269,9 @@
             x: 0.5,
             y: 1.1,
             xanchor: 'center',
-            orientation: 'h'
+            orientation: 'h',
+            bgcolor: '#252526',
+            font: { color: '#e5e7eb' }
         }
     };
 
@@ -261,8 +280,8 @@
         responsive: true
     };
 
-    // BAR TRACE FIRST, LINE TRACE SECOND
-    Plotly.newPlot('paceChart', [trace1, trace2], layout, config);
+    // BAR TRACE FIRST, THEN BOTH LINE TRACES
+    Plotly.newPlot('paceChart', [trace1, trace2, trace3], layout, config);
     {% endif %}
 </script>
 {% endblock %}
