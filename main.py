@@ -333,6 +333,11 @@ async def update_completed_book(
         completion_date: Optional[str] = Form(None)
 ):
     """Update completed book details."""
+    # Convert empty strings to None
+    review = None if (review == "" or review is None) else review
+    start_date = None if (start_date == "" or start_date is None) else start_date
+    completion_date = None if (completion_date == "" or completion_date is None) else completion_date
+
     success = db.update_completed_book(
         book_id=book_id,
         rating=rating,
@@ -424,6 +429,11 @@ async def update_abandoned_book(
         abandonment_date: Optional[str] = Form(None)
 ):
     """Update abandoned book details."""
+    # Convert empty strings to None
+    reason = None if (reason == "" or reason is None) else reason
+    start_date = None if (start_date == "" or start_date is None) else start_date
+    abandonment_date = None if (abandonment_date == "" or abandonment_date is None) else abandonment_date
+
     success = db.update_abandoned_book(
         book_id=book_id,
         page_at_abandonment=page_at_abandonment,

@@ -49,6 +49,7 @@
                     <th>Genre</th>
                     <th>Pages</th>
                     <th>Rating</th>
+                    <th>Duration</th>
                     <th>Completed</th>
                     <th>Actions</th>
                 </tr>
@@ -87,9 +88,16 @@
                         <span class="text-muted">-</span>
                         {% endif %}
                     </td>
+                    <td>
+                        {% if book.duration_days %}
+                            {{ book.duration_days }} days
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
                     <td>{{ book.completion_date[:10] }}</td>
                     <td class="actions-cell">
-                        <button class="btn-icon" onclick="openEditModal({{ book.id }}, {{ book.rating or 0 }}, '{{ book.review or '' }}', '{{ book.start_date or '' }}', '{{ book.completion_date or '' }}')" title="Edit">✏️</button>
+                        <button class="btn-icon" onclick="openEditModal({{ book.id }}, {{ book.rating or 0 }}, '{{ (book.review or '')|replace("'", "\\'") }}', '{{ book.start_date or '' }}', '{{ book.completion_date or '' }}')" title="Edit">✏️</button>
                         <a href="/sessions/{{ book.id }}" class="btn-icon" title="Sessions">📊</a>
                         <form method="post" action="/completed/remove/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Remove from completed and return to library?')">
                             <button type="submit" class="btn-icon btn-danger" title="Remove">🔙</button>

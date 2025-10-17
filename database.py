@@ -388,12 +388,13 @@ def get_completed_books(
 
     query = f"""
         SELECT 
-            b.*,
-            cb.id as completion_id,
-            cb.rating,
-            cb.review,
-            cb.start_date,
-            cb.completion_date
+        b.*,
+        cb.id as completion_id,
+        cb.rating,
+        cb.review,
+        cb.start_date,
+        cb.completion_date,
+        CAST(JULIANDAY(cb.completion_date) - JULIANDAY(cb.start_date) AS INTEGER) as duration_days
         FROM books b
         JOIN completed_books cb ON b.id = cb.book_id
         WHERE {where_clause}
@@ -459,22 +460,18 @@ def update_completed_book(
     updates = []
     params = []
 
-    if rating is not None:
-        updates.append("rating = ?")
-        params.append(rating)
-    if review is not None:
-        updates.append("review = ?")
-        params.append(review)
-    if start_date is not None:
-        updates.append("start_date = ?")
-        params.append(start_date)
-    if completion_date is not None:
-        updates.append("completion_date = ?")
-        params.append(completion_date)
+    # ALWAYS update these fields if they're in the form submission
+    updates.append("rating = ?")
+    params.append(rating)
 
-    if not updates:
-        conn.close()
-        return False
+    updates.append("review = ?")
+    params.append(review)
+
+    updates.append("start_date = ?")
+    params.append(start_date)
+
+    updates.append("completion_date = ?")
+    params.append(completion_date)
 
     params.append(book_id)
     query = f"UPDATE completed_books SET {', '.join(updates)} WHERE book_id = ?"
@@ -622,22 +619,18 @@ def update_abandoned_book(
     updates = []
     params = []
 
-    if page_at_abandonment is not None:
-        updates.append("page_at_abandonment = ?")
-        params.append(page_at_abandonment)
-    if reason is not None:
-        updates.append("reason = ?")
-        params.append(reason)
-    if start_date is not None:
-        updates.append("start_date = ?")
-        params.append(start_date)
-    if abandonment_date is not None:
-        updates.append("abandonment_date = ?")
-        params.append(abandonment_date)
+    # ALWAYS update these fields
+    updates.append("page_at_abandonment = ?")
+    params.append(page_at_abandonment)
 
-    if not updates:
-        conn.close()
-        return False
+    updates.append("reason = ?")
+    params.append(reason)
+
+    updates.append("start_date = ?")
+    params.append(start_date)
+
+    updates.append("abandonment_date = ?")
+    params.append(abandonment_date)
 
     params.append(book_id)
     query = f"UPDATE abandoned_books SET {', '.join(updates)} WHERE book_id = ?"
