@@ -170,20 +170,28 @@
     // Aggregate by day
     const dayData = {};
     daysOfWeek.forEach(day => {
-        dayData[day] = { pages: 0, minutes: 0 };
+        dayData[day] = { pages: 0, minutes: 0, hours: 0 };
     });
 
     weeklyData.forEach(session => {
         const date = new Date(session.session_date);
         const dayName = daysOfWeek[date.getDay()];
         const durationMinutes = Math.round(session.duration_seconds / 60);
+        const pagesPerHour = session.duration_seconds > 0 ? (session.pages_read / session.duration_seconds) * 3600 : 0;
 
         dayData[dayName].pages += session.pages_read;
         dayData[dayName].minutes += durationMinutes;
+        dayData[dayName].hours = pagesPerHour; // Will be recalculated
     });
 
-    // Get pages and minutes per day
-    const pagesPerDay = daysOfWeek.map(day => dayData[day].pages);
+    // Calculate pages per hour for each day
+    const pagesPerHour = daysOfWeek.map(day => {
+        if (dayData[day].minutes > 0) {
+            return (dayData[day].pages / dayData[day].minutes) * 60;
+        }
+        return 0;
+    });
+
     const minutesPerDay = daysOfWeek.map(day => dayData[day].minutes);
 
     // Minutes bar chart (trace1 - BARS FIRST)
@@ -202,11 +210,11 @@
         }
     };
 
-    // Pages line chart (trace2 - LINE SECOND)
+    // Pages per hour line chart (trace2 - LINE SECOND)
     const trace2 = {
         x: daysOfWeek,
-        y: pagesPerDay,
-        name: 'Pages',
+        y: pagesPerHour,
+        name: 'Pages/Hour',
         type: 'scatter',
         mode: 'lines+markers',
         line: { color: '#ce736c', width: 3 },
@@ -232,7 +240,7 @@
             linecolor: '#2d3452'
         },
         yaxis2: {
-            title: 'Pages',
+            title: 'Pages per Hour',
             overlaying: 'y',
             side: 'right',
             gridcolor: '#2c2c2d',
