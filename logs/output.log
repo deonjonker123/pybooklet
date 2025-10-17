@@ -1,0 +1,461 @@
+INFO:     127.0.0.1:56625 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56625 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57964 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57964 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57964 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57964 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57964 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56415 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56415 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62341 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62341 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64008 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64008 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61923 - "POST /tracker/session/stop/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:61923 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61923 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61923 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58114 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55148 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55148 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50810 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50810 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58518 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50098 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57926 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54690 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54690 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:49901 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49901 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:49901 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49901 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58000 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58000 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64106 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51024 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51024 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58369 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58369 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63544 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65356 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50937 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59688 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59688 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59688 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57496 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59688 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59688 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59688 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59688 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59688 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59688 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59688 - "GET /book/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59688 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63849 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63849 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63849 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63849 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63849 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63781 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63781 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63781 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62793 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62793 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51831 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51831 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59593 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59593 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53646 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53646 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53646 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60700 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60700 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51811 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59732 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59732 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54196 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54196 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53960 - "POST /tracker/update-progress/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:53960 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62189 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62189 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63845 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63845 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63845 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55748 - "POST /abandoned/remove/757 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:55748 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55748 - "GET /statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53602 - "GET /random HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53602 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53602 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53602 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61299 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61299 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61299 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55379 - "GET /book/779 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62789 - "POST /library/update/779 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:62789 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62789 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62709 - "GET /statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65104 - "GET /random HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65104 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64607 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61430 - "POST /tracker/session/stop/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:61430 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58293 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58293 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58293 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49663 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51713 - "POST /tracker/session/stop/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:51713 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51713 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51713 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63312 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63312 - "GET /library/search?search=sc&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63312 - "GET /library/search?search=scot&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63312 - "GET /library/search?search=scott&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59706 - "GET /book/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52185 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64956 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64956 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64956 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64956 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52704 - "POST /tracker/session/stop/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:52704 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56551 - "POST /tracker/update-progress/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:56551 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56551 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51061 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51061 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57312 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57862 - "POST /library/add HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:57862 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53702 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58864 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58864 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56489 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56489 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62336 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62336 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62336 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62336 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:55662 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55662 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:55662 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55662 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56742 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56742 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56742 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56742 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:49889 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49889 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64403 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64403 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64403 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64403 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60574 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60574 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60574 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60574 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:60574 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60574 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62810 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62810 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62810 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62810 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49819 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49819 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49819 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49819 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62810 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62810 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49909 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49909 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56295 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56295 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59681 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59681 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57816 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57816 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57816 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57816 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57816 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59568 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59568 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53354 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53354 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53354 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53354 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53354 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53354 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53354 - "GET /statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53354 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62106 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62106 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62106 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63123 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63123 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63123 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56383 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56383 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59044 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59044 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62529 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62529 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51153 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51153 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53901 - "GET /statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53477 - "GET /random HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53477 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53477 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53477 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53477 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53173 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53173 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:55297 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55297 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58627 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58627 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:49986 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49986 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:49986 - "GET /library/search?search=sco&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49986 - "GET /library/search?search=scott&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56432 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56432 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54579 - "GET /completed/search?search=adrian&sort_by=completion_date HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54579 - "GET /author/Adrian%20Tchaikovsky HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54579 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59619 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59619 - "GET /library/search?search=rim&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50154 - "GET /library/search?search=ring&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53838 - "GET /library/search?search=adrian&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53838 - "GET /author/Adrian%20Tchaikovsky HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53838 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:65167 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65167 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63780 - "POST /tracker/session/stop/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:63780 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63780 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:49715 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:49715 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50005 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50005 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59242 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64375 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64375 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:65330 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53089 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51818 - "GET /library?page=1&limit=200&sort_by=date_added&search= HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60183 - "GET /library?page=2&limit=200&sort_by=date_added&search= HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49848 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49848 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:50270 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50270 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53946 - "POST /tracker/session/stop/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:53946 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53946 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57381 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57381 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57381 - "GET /book/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57381 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57381 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62169 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57246 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60763 - "POST /tracker/session/stop/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:60763 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60763 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60763 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60763 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53710 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53710 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53710 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63294 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61665 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61665 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61665 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59599 - "GET /book/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59599 - "POST /library/update/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:59599 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59599 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52154 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62632 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55814 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55814 - "GET /random HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55814 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55814 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55814 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55950 - "GET /author/Guy%20Gavriel%20Kay HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49859 - "GET /book/1325 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51918 - "POST /library/update/1325 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:51918 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51918 - "GET /random HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51918 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51918 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51918 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51918 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51918 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51918 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51918 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51918 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55459 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52997 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52997 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50233 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50233 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59257 - "GET /book/906 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55306 - "POST /library/update/906 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:55306 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65031 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65031 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62563 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58527 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50242 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56876 - "GET /sessions/1283?week_start=2025-10-05&page=1&limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56876 - "GET /sessions/1283?week_start=2025-10-12&page=1&limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56876 - "GET /sessions/1283?week_start=2025-10-19&page=1&limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56876 - "GET /sessions/1283?week_start=2025-10-12&page=1&limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57805 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56816 - "POST /tracker/session/stop/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:56816 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56816 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56816 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65088 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64149 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64149 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:50666 - "POST /tracker/session/stop/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:50666 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50666 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61138 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49557 - "POST /tracker/session/stop/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:49557 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49557 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57353 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65297 - "POST /tracker/session/stop/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:65297 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58215 - "POST /tracker/session/stop/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:58215 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63897 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49916 - "POST /tracker/session/stop/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:49916 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49916 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64018 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64018 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56437 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62005 - "POST /tracker/session/stop/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:62005 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62005 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62005 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58915 - "POST /tracker/update-progress/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:58915 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52434 - "POST /tracker/complete/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:52434 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52434 - "GET /book/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52308 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57523 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57523 - "GET /statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64062 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64062 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61216 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63178 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63178 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52943 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52943 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52943 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56945 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56945 - "GET /library/search?search=r&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56945 - "GET /library/search?search=ruin&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56945 - "POST /library/read/1079 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:56945 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57095 - "GET /book/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53747 - "POST /library/update/1079 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:53747 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53747 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61620 - "POST /tracker/session/stop/1079 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:61620 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61620 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59453 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50574 - "GET /book/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54836 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54836 - "GET /statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54836 - "GET /statistics?year=0 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61200 - "GET /statistics?year=2025 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49503 - "GET /completed?year=2025 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65500 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:64580 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64580 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:64580 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64580 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:61868 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61868 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:59634 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53996 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58096 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61021 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61021 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57434 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57434 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65263 - "POST /completed/update/1283 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:65263 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52222 - "POST /completed/update/756 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:52222 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65191 - "POST /completed/update/756 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:65191 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53046 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52251 - "POST /completed/update/756 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:52251 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52251 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60195 - "POST /completed/update/1011 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:60195 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60195 - "POST /completed/update/1011 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:60195 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59479 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52745 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54525 - "POST /completed/update/1011 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:54525 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63598 - "POST /completed/update/756 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:63598 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60979 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60979 - "POST /completed/update/756 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:60979 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62785 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51096 - "GET /book/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51096 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51096 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58417 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63809 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50438 - "POST /abandoned/update/758 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:50438 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50460 - "POST /abandoned/update/758 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:50460 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57292 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57292 - "POST /abandoned/update/758 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:57292 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65528 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65528 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58340 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58340 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55659 - "POST /abandoned/update/758 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:55659 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61925 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53937 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61654 - "GET /completed HTTP/1.1" 200 OK
