@@ -5,7 +5,7 @@
 {% block content %}
 <div class="page-container">
     <div class="page-header">
-        <h1>🔄 Restore Database</h1>
+        <h1>Restore Database</h1>
     </div>
 
     <div class="restore-container" style="max-width: 600px; margin: 0 auto;">
@@ -25,17 +25,6 @@
                 <button type="submit" class="btn btn-primary">Restore Database</button>
             </div>
         </form>
-
-        <div style="margin-top: var(--spacing-2xl); padding-top: var(--spacing-xl); border-top: 1px solid var(--border-subtle);">
-            <h3>How to Restore:</h3>
-            <ol style="color: var(--text-secondary); line-height: 1.8;">
-                <li>Click "Choose File" and select your backup .db file</li>
-                <li>Click "Restore Database"</li>
-                <li>Your current database will be backed up automatically</li>
-                <li>The backup will replace your current database</li>
-                <li>You'll be redirected to the dashboard</li>
-            </ol>
-        </div>
     </div>
 </div>
 {% endblock %}

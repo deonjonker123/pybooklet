@@ -14,9 +14,9 @@
 
     <!-- Week Navigation -->
     <div class="week-navigation">
-        <a href="/sessions/{{ book.id }}?week_start={{ prev_week }}&page={{ current_page }}&limit={{ limit }}" class="btn btn-secondary">← Previous Week</a>
+        <a href="/sessions/{{ book.id }}?week_start={{ prev_week }}&page={{ current_page }}&limit={{ limit }}" class="btn btn-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i> Previous Week</a>
         <span class="week-display">Week of {{ week_start }}</span>
-        <a href="/sessions/{{ book.id }}?week_start={{ next_week }}&page={{ current_page }}&limit={{ limit }}" class="btn btn-secondary">Next Week →</a>
+        <a href="/sessions/{{ book.id }}?week_start={{ next_week }}&page={{ current_page }}&limit={{ limit }}" class="btn btn-secondary">Next Week <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
     </div>
 
     <!-- Weekly Stats -->
@@ -26,9 +26,9 @@
             <div class="stat-value">{{ avg_pages_per_hour }}</div>
             <div class="stat-change {% if pace_change > 0 %}positive{% elif pace_change < 0 %}negative{% else %}neutral{% endif %}">
                 {% if pace_change > 0 %}
-                ↑ +{{ pace_change }}
+                <i class="fa fa-arrow-up" aria-hidden="true"></i> +{{ pace_change }}
                 {% elif pace_change < 0 %}
-                ↓ {{ pace_change }}
+                <i class="fa fa-arrow-down" aria-hidden="true"></i> {{ pace_change }}
                 {% else %}
                 = {{ pace_change }}
                 {% endif %}
@@ -41,9 +41,9 @@
             <div class="stat-value">{{ total_pages }}</div>
             <div class="stat-change {% if pages_change > 0 %}positive{% elif pages_change < 0 %}negative{% else %}neutral{% endif %}">
                 {% if pages_change > 0 %}
-                ↑ +{{ pages_change }}
+                <i class="fa fa-arrow-up" aria-hidden="true"></i> +{{ pages_change }}
                 {% elif pages_change < 0 %}
-                ↓ {{ pages_change }}
+                <i class="fa fa-arrow-down" aria-hidden="true"></i> {{ pages_change }}
                 {% else %}
                 = {{ pages_change }}
                 {% endif %}
@@ -56,9 +56,9 @@
             <div class="stat-value">{{ reading_days }}</div>
             <div class="stat-change {% if days_change > 0 %}positive{% elif days_change < 0 %}negative{% else %}neutral{% endif %}">
                 {% if days_change > 0 %}
-                ↑ +{{ days_change }}
+                <i class="fa fa-arrow-up" aria-hidden="true"></i> +{{ days_change }}
                 {% elif days_change < 0 %}
-                ↓ {{ days_change }}
+                <i class="fa fa-arrow-down" aria-hidden="true"></i> {{ days_change }}
                 {% else %}
                 = {{ days_change }}
                 {% endif %}
@@ -90,7 +90,7 @@
                                 {% if session.cover_url %}
                                 <img src="{{ session.cover_url }}" alt="{{ session.title }}" style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;">
                                 {% else %}
-                                <div class="table-cover-placeholder" style="width: 40px; height: 60px; font-size: 24px;">📕</div>
+                                <div class="table-cover-placeholder" style="width: 40px; height: 60px; font-size: 24px;"><i class="fa fa-book" aria-hidden="true"></i></div>
                                 {% endif %}
                                 <div>
                                     <strong>{{ session.title }}</strong><br>
@@ -105,11 +105,11 @@
                             {% if hours > 0 %}{{ hours }}h {% endif %}{{ minutes }}m
                         </td>
                         <td>{{ session.pages_read }}</td>
-                        <td>{{ session.start_page }} → {{ session.end_page }}</td>
+                        <td>{{ session.start_page }} <i class="fa fa-arrow-right" aria-hidden="true"></i> {{ session.end_page }}</td>
                         <td class="actions-cell">
                             <form method="post" action="/sessions/delete/{{ session.id }}" style="display: inline;" onsubmit="return confirm('Delete this session?')">
                                 <input type="hidden" name="book_id" value="{{ book.id }}">
-                                <button type="submit" class="btn-icon btn-danger" title="Delete">🗑️</button>
+                                <button type="submit" class="btn-icon btn-danger" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
                             </form>
                         </td>
                     </tr>
@@ -145,7 +145,7 @@
         {% endif %}
         {% else %}
         <div class="empty-state">
-            <p>📭 No reading sessions recorded yet</p>
+            <p>No reading sessions recorded yet</p>
             <p class="text-muted">Start a timer session from the tracker page!</p>
         </div>
         {% endif %}

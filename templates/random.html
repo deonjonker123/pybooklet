@@ -4,11 +4,11 @@
 
 {% block content %}
 <div class="random-container">
-    <h1>🎲 Random Book Selector</h1>
+    <h1>Random Book Selector</h1>
 
     <div class="random-button-container">
         <button class="btn-random" hx-post="/random/select" hx-target="#randomResult" hx-swap="innerHTML">
-            🎲 Pick Random Book
+            <i class="fa fa-random" aria-hidden="true"></i> Pick Random Book
         </button>
     </div>
 
@@ -24,7 +24,7 @@
     document.addEventListener('htmx:beforeRequest', function(evt) {
         const btn = evt.detail.elt;
         if (btn.classList.contains('btn-random')) {
-            btn.textContent = '🎲 Rolling...';
+            btn.textContent = 'Rolling...';
             btn.disabled = true;
         }
     });
@@ -32,7 +32,7 @@
     document.addEventListener('htmx:afterRequest', function(evt) {
         const btn = evt.detail.elt;
         if (btn.classList.contains('btn-random')) {
-            btn.textContent = '🎲 Pick Random Book';
+            btn.textContent = 'Pick Random Book';
             btn.disabled = false;
         }
     });

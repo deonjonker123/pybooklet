@@ -55,12 +55,12 @@
                     </div>
 
                     <div class="tracker-row-actions">
-                        <button class="btn btn-timer" onclick="openTimerModal({{ book.id }}, {{ book.current_page }}, {{ book.page_count }})">⏱️ Timer</button>
-                        <a href="/sessions/{{ book.id }}" class="btn btn-primary">📊 Sessions</a>
-                        <button class="btn btn-success" onclick="openCompleteModal({{ book.id }})">✅ Complete</button>
-                        <button class="btn btn-danger" onclick="openAbandonModal({{ book.id }}, {{ book.current_page }})">❌ Abandon</button>
+                        <button class="btn btn-timer" onclick="openTimerModal({{ book.id }}, {{ book.current_page }}, {{ book.page_count }})"><i class="fa fa-clock-o" aria-hidden="true"></i>️ Timer</button>
+                        <a href="/sessions/{{ book.id }}" class="btn btn-primary"><i class="fa fa-bar-chart" aria-hidden="true"></i> Sessions</a>
+                        <button class="btn btn-success" onclick="openCompleteModal({{ book.id }})"><i class="fa fa-check" aria-hidden="true"></i> Complete</button>
+                        <button class="btn btn-danger" onclick="openAbandonModal({{ book.id }}, {{ book.current_page }})"><i class="fa fa-times" aria-hidden="true"></i> Abandon</button>
                         <form method="post" action="/tracker/remove/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Remove this book from tracker?')">
-                            <button type="submit" class="btn btn-secondary">🔙 Remove</button>
+                            <button type="submit" class="btn btn-secondary"><i class="fa fa-trash-o" aria-hidden="true"></i> Remove</button>
                         </form>
                     </div>
                 </div>

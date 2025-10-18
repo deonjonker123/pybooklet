@@ -61,20 +61,20 @@
             </div>
 
             <div class="book-actions">
-                <button class="btn btn-success" onclick="openEditModal()">✏️ Edit</button>
+                <button class="btn btn-success" onclick="openEditModal()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button>
 
                 {% if status == 'library' %}
                 <form method="post" action="/library/read/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Start reading this book?')">
-                    <button type="submit" class="btn btn-primary">📖 Read</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-book" aria-hidden="true"></i> Read</button>
                 </form>
                 {% endif %}
 
                 {% if has_sessions %}
-                <a href="/sessions/{{ book.id }}" class="btn btn-primary">📊 Sessions</a>
+                <a href="/sessions/{{ book.id }}" class="btn btn-primary"><i class="fa fa-bar-chart" aria-hidden="true"></i> Sessions</a>
                 {% endif %}
 
                 <form method="post" action="/library/delete/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Delete this book permanently?')">
-                    <button type="submit" class="btn btn-danger">🗑️ Delete</button>
+                    <button type="submit" class="btn btn-danger"><i class="fa fa-trash-o" aria-hidden="true"></i>️ Delete</button>
                 </form>
             </div>
         </div>

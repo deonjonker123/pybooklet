@@ -44,10 +44,10 @@
     <td>{{ book.start_date[:10] }}</td>
     <td>{{ book.completion_date[:10] }}</td>
     <td class="actions-cell">
-        <button class="btn-icon" onclick="openEditModal({{ book.id }}, {{ book.rating or 0 }}, '{{ (book.review or '')|replace("'", "\\'") }}', '{{ book.start_date or '' }}', '{{ book.completion_date or '' }}')" title="Edit">✏️</button>
-        <a href="/sessions/{{ book.id }}" class="btn-icon" title="Sessions">📊</a>
+        <button class="btn-icon" onclick="openEditModal({{ book.id }}, {{ book.rating or 0 }}, '{{ (book.review or '')|replace("'", "\\'") }}', '{{ book.start_date or '' }}', '{{ book.completion_date or '' }}')" title="Edit">️<i class="fa fa-pencil-square" aria-hidden="true"></i>️</button>
+        <a href="/sessions/{{ book.id }}" class="btn-icon" title="Sessions"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>
         <form method="post" action="/completed/remove/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Remove from completed and return to library?')">
-            <button type="submit" class="btn-icon btn-danger" title="Remove">🔙</button>
+            <button type="submit" class="btn-icon btn-danger" title="Remove"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
         </form>
     </td>
 </tr>

@@ -5,7 +5,7 @@
 {% block content %}
 <div class="page-container">
     <div class="page-header">
-        <h1>✍️ {{ author_name }}</h1>
+        <h1>{{ author_name }}</h1>
     </div>
 
     <!-- Search and Sort -->
@@ -44,7 +44,7 @@
                         {% if book.cover_url %}
                         <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="table-cover">
                         {% else %}
-                        <div class="table-cover-placeholder">📕</div>
+                        <div class="table-cover-placeholder"><i class="fa fa-book" aria-hidden="true"></i></div>
                         {% endif %}
                     </td>
                     <td><a href="/book/{{ book.id }}" class="book-link">{{ book.title }}</a></td>
@@ -75,13 +75,13 @@
                         {% endif %}
                     </td>
                     <td class="actions-cell">
-                        <a href="/book/{{ book.id }}" class="btn-icon" title="Open">👁️</a>
+                        <a href="/book/{{ book.id }}" class="btn-icon" title="Open"><i class="fa fa-external-link" aria-hidden="true"></i></a>
                         {% if book.status == 'library' %}
                         <form method="post" action="/library/read/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Start reading this book?')">
-                            <button type="submit" class="btn-icon" title="Read">📖</button>
+                            <button type="submit" class="btn-icon" title="Read"><i class="fa fa-book" aria-hidden="true"></i></button>
                         </form>
                         <form method="post" action="/library/delete/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Delete this book permanently?')">
-                            <button type="submit" class="btn-icon btn-danger" title="Delete">🗑️</button>
+                            <button type="submit" class="btn-icon btn-danger" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
                         </form>
                         {% endif %}
                     </td>

@@ -4,14 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4beb65f4-2998-4a98-b8ba-18053c98c895" name="Changes" comment="Done">
+    <list default="true" id="4beb65f4-2998-4a98-b8ba-18053c98c895" name="Changes" comment="Look update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pybooklet.db" beforeDir="false" afterPath="$PROJECT_DIR$/pybooklet.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/favicon.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/favicon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/logo.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/abandoned.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/abandoned.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/author.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/author.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/book_details.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/book_details.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/completed.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/completed.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/genre.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/genre.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/library.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/library.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/partials/abandoned_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/abandoned_table.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/partials/completed_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/completed_table.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/partials/library_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/library_table.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/partials/random_book.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/random_book.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/random.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/random.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/restore.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/restore.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/series.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/series.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sessions.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sessions.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/statistics.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/statistics.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/tracker.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tracker.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +104,7 @@
       <workItem from="1760725956481" duration="407000" />
       <workItem from="1760739859732" duration="2824000" />
       <workItem from="1760777307419" duration="796000" />
-      <workItem from="1760787789941" duration="2249000" />
+      <workItem from="1760787789941" duration="4475000" />
     </task>
     <task id="LOCAL-00001" summary="Initial">
       <option name="closed" value="true" />
@@ -182,7 +194,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760778098129</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Look update">
+      <option name="closed" value="true" />
+      <created>1760790991611</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1760790991611</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -195,6 +215,7 @@
     <MESSAGE value="Style updates" />
     <MESSAGE value="Bug fixes" />
     <MESSAGE value="Done" />
-    <option name="LAST_COMMIT_MESSAGE" value="Done" />
+    <MESSAGE value="Look update" />
+    <option name="LAST_COMMIT_MESSAGE" value="Look update" />
   </component>
 </project>

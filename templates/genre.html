@@ -70,13 +70,13 @@
                         {% endif %}
                     </td>
                     <td class="actions-cell">
-                        <a href="/book/{{ book.id }}" class="btn-icon" title="Open">👁️</a>
+                        <a href="/book/{{ book.id }}" class="btn-icon" title="Open"><i class="fa fa-external-link" aria-hidden="true"></i></a>
                         {% if book.status == 'library' %}
                         <form method="post" action="/library/read/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Start reading this book?')">
-                            <button type="submit" class="btn-icon" title="Read">📖</button>
+                            <button type="submit" class="btn-icon" title="Read"><i class="fa fa-book" aria-hidden="true"></i></button>
                         </form>
                         <form method="post" action="/library/delete/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Delete this book permanently?')">
-                            <button type="submit" class="btn-icon btn-danger" title="Delete">🗑️</button>
+                            <button type="submit" class="btn-icon btn-danger" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
                         </form>
                         {% endif %}
                     </td>

@@ -47,7 +47,7 @@
                         {% if book.cover_url %}
                         <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="table-cover">
                         {% else %}
-                        <div class="table-cover-placeholder">📕</div>
+                        <div class="table-cover-placeholder"><i class="fa fa-book" aria-hidden="true"></i></div>
                         {% endif %}
                     </td>
                     <td>
@@ -76,10 +76,10 @@
                     </td>
                     <td>{{ book.abandonment_date[:10] }}</td>
                     <td class="actions-cell">
-                        <button class="btn-icon" onclick="openEditModal({{ book.id }}, {{ book.page_at_abandonment }}, '{{ (book.reason or '')|replace("'", "\\'") }}', '{{ book.start_date or '' }}', '{{ book.abandonment_date or '' }}')" title="Edit">✏️</button>
-                        <a href="/sessions/{{ book.id }}" class="btn-icon" title="Sessions">📊</a>
+                        <button class="btn-icon" onclick="openEditModal({{ book.id }}, {{ book.page_at_abandonment }}, '{{ (book.reason or '')|replace("'", "\\'") }}', '{{ book.start_date or '' }}', '{{ book.abandonment_date or '' }}')" title="Edit">️<i class="fa fa-pencil-square" aria-hidden="true"></i></button>
+                        <a href="/sessions/{{ book.id }}" class="btn-icon" title="Sessions"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>
                         <form method="post" action="/abandoned/remove/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Remove from abandoned and return to library?')">
-                            <button type="submit" class="btn-icon btn-danger" title="Remove">🔙</button>
+                            <button type="submit" class="btn-icon btn-danger" title="Remove"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
                         </form>
                     </td>
                 </tr>

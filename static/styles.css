@@ -301,7 +301,6 @@ p {
 
 .btn-danger:hover {
     transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
     color: white;
 }
 
@@ -323,7 +322,6 @@ p {
 
 .btn-warning:hover {
     transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
     color: white;
 }
 
@@ -339,12 +337,11 @@ p {
 }
 
 .btn-icon:hover {
-    background-color: var(--surface);
+    transform: translateY(-1px);
     color: var(--text-primary);
 }
 
 .btn-icon.btn-danger:hover {
-    background-color: var(--surface);
     color: var(--accent-red);
 }
 
@@ -1110,7 +1107,6 @@ p {
 
 .btn-timer:hover {
     transform: translateY(-1px);
-    box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
     color: white;
 }
 

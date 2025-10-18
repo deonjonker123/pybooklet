@@ -6,6 +6,7 @@
     <title>{% block title %}Booklet{% endblock %}</title>
     <link rel="icon" type="image/png" href="/static/favicon.png">
     <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     {% block extra_head %}{% endblock %}
 </head>
@@ -28,8 +29,8 @@
                 <li><a href="/random" class="{% if request.url.path.startswith('/random') %}active{% endif %}">Random</a></li>
             </ul>
             <div class="nav-actions">
-                <a href="/backup" class="btn-backup" title="Backup Database">💾 Backup</a>
-                <a href="/restore" class="btn-restore" title="Restore Database">🔄 Restore</a>
+                <a href="/backup" class="btn-backup" title="Backup Database"><i class="fa fa-floppy-o" aria-hidden="true"></i> Backup</a>
+                <a href="/restore" class="btn-restore" title="Restore Database"><i class="fa fa-repeat" aria-hidden="true"></i> Restore</a>
             </div>
         </div>
     </nav>

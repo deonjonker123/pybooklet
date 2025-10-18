@@ -6,7 +6,7 @@
 <div class="page-container">
     <div class="page-header">
         <h1>Library</h1>
-        <button class="btn btn-primary" onclick="openModal('addBookModal')">+ Add Book</button>
+        <button class="btn btn-primary" onclick="openModal('addBookModal')"><i class="fa fa-plus" aria-hidden="true"></i> Add Book</button>
     </div>
 
     <!-- Search and Sort -->
@@ -48,7 +48,7 @@
                         {% if book.cover_url %}
                         <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="table-cover">
                         {% else %}
-                        <div class="table-cover-placeholder">📕</div>
+                        <div class="table-cover-placeholder"><i class="fa fa-book" aria-hidden="true"></i></div>
                         {% endif %}
                     </td>
                      <td>
@@ -72,12 +72,12 @@
                     </td>
                     <td>{{ book.page_count }}</td>
                     <td class="actions-cell">
-                        <button class="btn-icon" onclick="openEditModal({{ book.id }}, '{{ book.title }}', '{{ book.author }}', '{{ book.series or '' }}', {{ book.series_number or 'null' }}, '{{ book.genre or '' }}', {{ book.page_count }}, '{{ book.cover_url or '' }}', '{{ book.synopsis or '' }}')" title="Edit">✏️</button>
+                        <button class="btn-icon" onclick="openEditModal({{ book.id }}, '{{ book.title }}', '{{ book.author }}', '{{ book.series or '' }}', {{ book.series_number or 'null' }}, '{{ book.genre or '' }}', {{ book.page_count }}, '{{ book.cover_url or '' }}', '{{ book.synopsis or '' }}')" title="Edit">️<i class="fa fa-pencil-square" aria-hidden="true"></i></button>
                         <form method="post" action="/library/read/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Start reading this book?')">
-                            <button type="submit" class="btn-icon" title="Read">📖</button>
+                            <button type="submit" class="btn-icon" title="Read"><i class="fa fa-book" aria-hidden="true"></i></button>
                         </form>
                         <form method="post" action="/library/delete/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Delete this book permanently?')">
-                            <button type="submit" class="btn-icon btn-danger" title="Delete">🗑️</button>
+                            <button type="submit" class="btn-icon btn-danger" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
                         </form>
                     </td>
                 </tr>

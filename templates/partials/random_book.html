@@ -51,22 +51,22 @@
     </div>
 
     <div class="random-book-actions">
-        <a href="/book/{{ book.id }}" class="btn btn-secondary">👁️ View Details</a>
+        <a href="/book/{{ book.id }}" class="btn btn-secondary"><i class="fa fa-external-link" aria-hidden="true"></i>️ View Details</a>
 
         {% if status == 'library' %}
         <form method="post" action="/library/read/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Start reading this book?')">
-            <button type="submit" class="btn btn-primary">📖 Read This Book</button>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-book" aria-hidden="true"></i> Read This Book</button>
         </form>
         {% endif %}
 
         <button class="btn btn-secondary" hx-post="/random/select" hx-target="#randomResult" hx-swap="innerHTML">
-            🎲 Choose Another
+            <i class="fa fa-random" aria-hidden="true"></i> Choose Another
         </button>
     </div>
 </div>
 {% else %}
 <div class="empty-state">
-    <p>😔 No books available to choose from!</p>
+    <p>No books available to choose from!</p>
     <p class="text-muted">Add some books to your library first.</p>
     <a href="/library" class="btn btn-primary">Go to Library</a>
 </div>
