@@ -1128,7 +1128,6 @@ p {
     background-clip: text;
     margin: var(--spacing-xl) 0;
     font-variant-numeric: tabular-nums;
-    filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.5));
 }
 
 .timer-controls {
@@ -1402,7 +1401,6 @@ p {
     border-radius: var(--radius-lg);
     cursor: pointer;
     transition: all var(--transition-fast);
-    box-shadow: var(--shadow-glow);
 }
 
 .btn-random:hover {
