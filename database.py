@@ -182,7 +182,7 @@ def update_book(
 def delete_book(book_id: int) -> bool:
     """
     Permanently delete a book from the database.
-    Also removes all related data (tracker, completed, abandoned, sessions).
+    Also removes all related data (tracker, completed, abandoned, sessions, TBR).
     """
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -192,6 +192,7 @@ def delete_book(book_id: int) -> bool:
     cursor.execute("DELETE FROM reading_tracker WHERE book_id = ?", (book_id,))
     cursor.execute("DELETE FROM completed_books WHERE book_id = ?", (book_id,))
     cursor.execute("DELETE FROM abandoned_books WHERE book_id = ?", (book_id,))
+    cursor.execute("DELETE FROM tbr_list_books WHERE book_id = ?", (book_id,))  # NEW LINE
     cursor.execute("DELETE FROM books WHERE id = ?", (book_id,))
 
     conn.commit()
@@ -1308,3 +1309,254 @@ def get_completed_books_by_series(series_name: str, year: int = None) -> List[Di
     conn.close()
 
     return books
+
+
+# ============================================================================
+# TBR LISTS OPERATIONS
+# ============================================================================
+
+def create_tbr_list(name: str, description: str = None) -> int:
+    """Create a new TBR list. Returns the list ID."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+                   INSERT INTO tbr_lists (name, description, date_created)
+                   VALUES (?, ?, ?)
+                   """, (name, description, datetime.now().date().isoformat()))
+
+    list_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+
+    return list_id
+
+
+def get_all_tbr_lists() -> List[Dict]:
+    """Get all TBR lists with their book counts."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+                   SELECT tl.*,
+                          COUNT(tlb.id) as book_count
+                   FROM tbr_lists tl
+                            LEFT JOIN tbr_list_books tlb ON tl.id = tlb.list_id
+                   GROUP BY tl.id
+                   ORDER BY tl.date_created DESC
+                   """)
+
+    lists = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+
+    return lists
+
+
+def get_tbr_list_by_id(list_id: int) -> Optional[Dict]:
+    """Get a single TBR list by ID."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM tbr_lists WHERE id = ?", (list_id,))
+    row = cursor.fetchone()
+
+    conn.close()
+    return dict(row) if row else None
+
+
+def update_tbr_list(list_id: int, name: str = None, description: str = None) -> bool:
+    """Update TBR list details. Only updates provided fields."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    updates = []
+    params = []
+
+    if name is not None:
+        updates.append("name = ?")
+        params.append(name)
+    if description is not None:
+        updates.append("description = ?")
+        params.append(description)
+
+    if not updates:
+        conn.close()
+        return False
+
+    params.append(list_id)
+    query = f"UPDATE tbr_lists SET {', '.join(updates)} WHERE id = ?"
+
+    cursor.execute(query, params)
+    conn.commit()
+    success = cursor.rowcount > 0
+    conn.close()
+
+    return success
+
+
+def delete_tbr_list(list_id: int) -> bool:
+    """Delete a TBR list and all its book associations."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Delete all book associations first
+    cursor.execute("DELETE FROM tbr_list_books WHERE list_id = ?", (list_id,))
+
+    # Delete the list
+    cursor.execute("DELETE FROM tbr_lists WHERE id = ?", (list_id,))
+
+    conn.commit()
+    success = cursor.rowcount > 0
+    conn.close()
+
+    return success
+
+
+def get_books_in_tbr_list(
+        list_id: int,
+        limit: int = 50,
+        offset: int = 0,
+        sort_by: str = "date_added",
+        search: str = None
+) -> tuple[List[Dict], int]:
+    """
+    Get all books in a specific TBR list with their current status.
+    Returns (books, total_count).
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    where_conditions = ["tlb.list_id = ?"]
+    params = [list_id]
+
+    if search:
+        where_conditions.append("""
+            (b.title LIKE ? OR b.author LIKE ? OR b.series LIKE ? OR b.genre LIKE ?)
+        """)
+        search_param = f"%{search}%"
+        params.extend([search_param, search_param, search_param, search_param])
+
+    where_clause = " AND ".join(where_conditions)
+
+    # Get total count
+    count_query = f"""
+        SELECT COUNT(*) as count
+        FROM tbr_list_books tlb
+        JOIN books b ON tlb.book_id = b.id
+        WHERE {where_clause}
+    """
+    cursor.execute(count_query, params)
+    total_count = cursor.fetchone()["count"]
+
+    # Get books with their status
+    valid_sorts = {
+        "author": "b.author",
+        "title": "b.title",
+        "page_count": "b.page_count",
+        "date_added": "tlb.date_added"
+    }
+    sort_column = valid_sorts.get(sort_by, "tlb.date_added")
+
+    query = f"""
+        SELECT 
+            b.*,
+            tlb.date_added as list_date_added,
+            CASE
+                WHEN EXISTS (SELECT 1 FROM reading_tracker WHERE book_id = b.id) THEN 'tracking'
+                WHEN EXISTS (SELECT 1 FROM completed_books WHERE book_id = b.id) THEN 'completed'
+                WHEN EXISTS (SELECT 1 FROM abandoned_books WHERE book_id = b.id) THEN 'abandoned'
+                ELSE 'library'
+            END as status
+        FROM tbr_list_books tlb
+        JOIN books b ON tlb.book_id = b.id
+        WHERE {where_clause}
+        ORDER BY {sort_column} DESC
+        LIMIT ? OFFSET ?
+    """
+    params.extend([limit, offset])
+
+    cursor.execute(query, params)
+    books = [dict(row) for row in cursor.fetchall()]
+
+    conn.close()
+    return books, total_count
+
+
+def add_book_to_tbr_list(book_id: int, list_id: int) -> bool:
+    """
+    Add a book to a TBR list.
+    If book is already on another list, removes it from that list first.
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Remove from any existing list first (UNIQUE constraint ensures only one list)
+    cursor.execute("DELETE FROM tbr_list_books WHERE book_id = ?", (book_id,))
+
+    # Add to new list
+    cursor.execute("""
+                   INSERT INTO tbr_list_books (list_id, book_id, date_added)
+                   VALUES (?, ?, ?)
+                   """, (list_id, book_id, datetime.now().date().isoformat()))
+
+    conn.commit()
+    conn.close()
+
+    return True
+
+
+def remove_book_from_tbr_list(book_id: int, list_id: int) -> bool:
+    """Remove a book from a specific TBR list."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+                   DELETE
+                   FROM tbr_list_books
+                   WHERE book_id = ?
+                     AND list_id = ?
+                   """, (book_id, list_id))
+
+    conn.commit()
+    success = cursor.rowcount > 0
+    conn.close()
+
+    return success
+
+
+def get_book_tbr_list(book_id: int) -> Optional[Dict]:
+    """
+    Check which TBR list (if any) a book is on.
+    Returns the list info or None.
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+                   SELECT tl.*
+                   FROM tbr_lists tl
+                            JOIN tbr_list_books tlb ON tl.id = tlb.list_id
+                   WHERE tlb.book_id = ?
+                   """, (book_id,))
+
+    row = cursor.fetchone()
+    conn.close()
+
+    return dict(row) if row else None
+
+
+def get_tbr_list_count(list_id: int) -> int:
+    """Get the count of books in a TBR list."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+                   SELECT COUNT(*) as count
+                   FROM tbr_list_books
+                   WHERE list_id = ?
+                   """, (list_id,))
+
+    count = cursor.fetchone()["count"]
+    conn.close()
+
+    return count

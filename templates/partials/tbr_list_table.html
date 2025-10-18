@@ -4,10 +4,10 @@
         {% if book.cover_url %}
         <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="table-cover">
         {% else %}
-        <div class="table-cover-placeholder">📕</div>
+        <div class="table-cover-placeholder"><i class="fa fa-book" aria-hidden="true"></i></div>
         {% endif %}
     </td>
-     <td>
+    <td>
         <a href="/book/{{ book.id }}" class="book-link">{{ book.title }}</a>
         <br>
         <small>
@@ -27,15 +27,27 @@
         {% endif %}
     </td>
     <td>{{ book.page_count }}</td>
+    <td>
+        {% if book.status == 'library' %}
+        <span class="status-badge badge-library">Library</span>
+        {% elif book.status == 'tracking' %}
+        <span class="status-badge badge-tracking">Tracking</span>
+        {% elif book.status == 'completed' %}
+        <span class="status-badge badge-completed">Completed</span>
+        {% elif book.status == 'abandoned' %}
+        <span class="status-badge badge-abandoned">Abandoned</span>
+        {% endif %}
+    </td>
     <td class="actions-cell">
-        <button class="btn-icon" onclick="openEditModal({{ book.id }}, '{{ book.title }}', '{{ book.author }}', '{{ book.series or '' }}', {{ book.series_number or 'null' }}, '{{ book.genre or '' }}', {{ book.page_count }}, '{{ book.cover_url or '' }}', '{{ book.synopsis or '' }}')" title="Edit">️<i class="fa fa-pencil-square" aria-hidden="true"></i></button>
+        <a href="/book/{{ book.id }}" class="btn-icon" title="Open"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+        {% if book.status == 'library' %}
         <form method="post" action="/library/read/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Start reading this book?')">
             <button type="submit" class="btn-icon" title="Read"><i class="fa fa-book" aria-hidden="true"></i></button>
         </form>
-        <form method="post" action="/library/delete/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Delete this book permanently?')">
-            <button type="submit" class="btn-icon btn-danger" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+        {% endif %}
+        <form method="post" action="/tbr/{{ list_id }}/remove/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Remove this book from the list?')">
+            <button type="submit" class="btn-icon btn-danger" title="Remove from List"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
         </form>
-        <button class="btn-icon" onclick="openTbrModal({{ book.id }})" title="Add to TBR"><i class="fa fa-bookmark" aria-hidden="true"></i></button>
     </td>
 </tr>
 {% endfor %}

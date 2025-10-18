@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}{{ tbr_list.name }} - Booklet{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <div>
+            <h1>{{ tbr_list.name }}</h1>
+            {% if tbr_list.description %}
+            <p class="text-muted">{{ tbr_list.description }}</p>
+            {% endif %}
+        </div>
+        <a href="/tbr" class="btn btn-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Lists</a>
+    </div>
+
+    <!-- Search and Sort -->
+    <div class="controls-bar">
+        <div class="search-box">
+            <input
+                type="text"
+                id="searchInput"
+                name="search"
+                placeholder="Search books in this list..."
+                value="{{ search }}"
+                hx-get="/tbr/{{ tbr_list.id }}/search"
+                hx-trigger="keyup changed delay:300ms"
+                hx-target="#booksTableBody"
+                hx-include="#sortBy"
+            >
+        </div>
+        <div class="sort-box">
+            <label for="sortBy">Sort by:</label>
+            <select name="sort_by" id="sortBy" hx-get="/tbr/{{ tbr_list.id }}/search" hx-trigger="change" hx-target="#booksTableBody" hx-include="#searchInput">
+                <option value="date_added" {% if sort_by == 'date_added' %}selected{% endif %}>Date Added</option>
+                <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Title</option>
+                <option value="author" {% if sort_by == 'author' %}selected{% endif %}>Author</option>
+                <option value="page_count" {% if sort_by == 'page_count' %}selected{% endif %}>Page Count</option>
+            </select>
+        </div>
+        <div class="results-count">
+            <span>{{ total_count }} book(s)</span>
+        </div>
+    </div>
+
+    <!-- Books Table -->
+    {% if books %}
+    <div class="table-container">
+        <table class="books-table">
+            <thead>
+                <tr>
+                    <th>Cover</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Pages</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="booksTableBody">
+                {% for book in books %}
+                <tr>
+                    <td class="cover-cell">
+                        {% if book.cover_url %}
+                        <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="table-cover">
+                        {% else %}
+                        <div class="table-cover-placeholder"><i class="fa fa-book" aria-hidden="true"></i></div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/book/{{ book.id }}" class="book-link">{{ book.title }}</a>
+                        <br>
+                        <small>
+                            {% if book.series %}
+                            <a href="/series/{{ book.series }}" class="series-link">{{ book.series }} #{{ book.series_number }}</a>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </small>
+                    </td>
+                    <td><a href="/author/{{ book.author }}" class="author-link">{{ book.author }}</a></td>
+                    <td>
+                        {% if book.genre %}
+                        <a href="/genre/{{ book.genre }}" class="genre-link">{{ book.genre }}</a>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td>{{ book.page_count }}</td>
+                    <td>
+                        {% if book.status == 'library' %}
+                        <span class="status-badge badge-library">Library</span>
+                        {% elif book.status == 'tracking' %}
+                        <span class="status-badge badge-tracking">Tracking</span>
+                        {% elif book.status == 'completed' %}
+                        <span class="status-badge badge-completed">Completed</span>
+                        {% elif book.status == 'abandoned' %}
+                        <span class="status-badge badge-abandoned">Abandoned</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions-cell">
+                        <a href="/book/{{ book.id }}" class="btn-icon" title="Open"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+                        {% if book.status == 'library' %}
+                        <form method="post" action="/library/read/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Start reading this book?')">
+                            <button type="submit" class="btn-icon" title="Read"><i class="fa fa-book" aria-hidden="true"></i></button>
+                        </form>
+                        {% endif %}
+                        <form method="post" action="/tbr/{{ tbr_list.id }}/remove/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Remove this book from the list?')">
+                            <button type="submit" class="btn-icon btn-danger" title="Remove from List"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        {% if current_page > 1 %}
+        <a href="/tbr/{{ tbr_list.id }}?page={{ current_page - 1 }}&limit={{ limit }}&sort_by={{ sort_by }}&search={{ search }}" class="btn btn-secondary">Previous</a>
+        {% endif %}
+
+        <span class="pagination-info">Page {{ current_page }} of {{ total_pages }}</span>
+
+        {% if current_page < total_pages %}
+        <a href="/tbr/{{ tbr_list.id }}?page={{ current_page + 1 }}&limit={{ limit }}&sort_by={{ sort_by }}&search={{ search }}" class="btn btn-secondary">Next</a>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="empty-state">
+        <p>No books in this list yet!</p>
+        <p class="text-muted">Add books from your Library, Completed, or Abandoned pages using the bookmark icon.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

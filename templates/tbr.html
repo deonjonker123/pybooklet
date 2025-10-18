@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}TBR Lists - Booklet{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1>TBR Lists</h1>
+        <button class="btn btn-primary" onclick="openModal('createListModal')"><i class="fa fa-plus" aria-hidden="true"></i> New List</button>
+    </div>
+
+    <div class="results-count">
+        <span>{{ lists|length }} list(s)</span>
+    </div>
+
+    <!-- TBR Lists Table -->
+    {% if lists %}
+    <div class="table-container">
+        <table class="books-table">
+            <thead>
+                <tr>
+                    <th>List Name</th>
+                    <th>Date Created</th>
+                    <th>Books</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for list in lists %}
+                <tr>
+                    <td>
+                        <a href="/tbr/{{ list.id }}" class="book-link">{{ list.name }}</a>
+                        {% if list.description %}
+                        <br>
+                        <small class="text-muted">{{ list.description }}</small>
+                        {% endif %}
+                    </td>
+                    <td>{{ list.date_created }}</td>
+                    <td>{{ list.book_count }}</td>
+                    <td class="actions-cell">
+                        <a href="/tbr/{{ list.id }}" class="btn-icon" title="Open"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+                        <button class="btn-icon" onclick="openEditListModal({{ list.id }}, '{{ list.name }}', '{{ list.description or '' }}')" title="Edit"><i class="fa fa-pencil-square" aria-hidden="true"></i></button>
+                        <form method="post" action="/tbr/delete/{{ list.id }}" style="display: inline;" onsubmit="return confirm('Delete this TBR list? Books will remain in your library.')">
+                            <button type="submit" class="btn-icon btn-danger" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No TBR lists yet!</p>
+        <p class="text-muted">Create a list to organize your books by theme, mood, or reading goals.</p>
+        <button class="btn btn-primary" onclick="openModal('createListModal')"><i class="fa fa-plus" aria-hidden="true"></i> Create Your First List</button>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Create List Modal -->
+<div id="createListModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Create New TBR List</h2>
+            <span class="close" onclick="closeModal('createListModal')">&times;</span>
+        </div>
+        <form method="post" action="/tbr/create">
+            <div class="form-group">
+                <label for="name">List Name *</label>
+                <input type="text" id="name" name="name" required maxlength="100">
+            </div>
+            <div class="form-group">
+                <label for="description">Description (Optional)</label>
+                <textarea id="description" name="description" rows="3" maxlength="500"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('createListModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create List</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit List Modal -->
+<div id="editListModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Edit TBR List</h2>
+            <span class="close" onclick="closeModal('editListModal')">&times;</span>
+        </div>
+        <form method="post" id="editListForm" action="">
+            <div class="form-group">
+                <label for="edit_name">List Name *</label>
+                <input type="text" id="edit_name" name="name" required maxlength="100">
+            </div>
+            <div class="form-group">
+                <label for="edit_description">Description (Optional)</label>
+                <textarea id="edit_description" name="description" rows="3" maxlength="500"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('editListModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function openModal(modalId) {
+    document.getElementById(modalId).style.display = 'flex';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+function openEditListModal(listId, name, description) {
+    document.getElementById('edit_name').value = name;
+    document.getElementById('edit_description').value = description;
+    document.getElementById('editListForm').action = '/tbr/edit/' + listId;
+    openModal('editListModal');
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}

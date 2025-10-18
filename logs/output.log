@@ -548,3 +548,410 @@ INFO:     127.0.0.1:52250 - "GET /sessions/1283 HTTP/1.1" 200 OK
 INFO:     127.0.0.1:52616 - "GET /library HTTP/1.1" 200 OK
 INFO:     127.0.0.1:52616 - "GET /completed HTTP/1.1" 200 OK
 INFO:     127.0.0.1:52616 - "GET /sessions/722 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62970 - "GET /sessions/722 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55676 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55676 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:50220 - "POST /tracker/session/stop/1079 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:50220 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50220 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61791 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61791 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52537 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52537 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51360 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51360 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51360 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51360 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51360 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63609 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63609 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63609 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63609 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52909 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52909 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52072 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52072 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52072 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50023 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:50023 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:50023 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50023 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50023 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52072 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52072 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50303 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50303 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50303 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58402 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:50303 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56330 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56330 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:56330 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56330 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56330 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:56330 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56330 - "GET /sessions/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56330 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:56330 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58118 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58118 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:58118 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58118 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58118 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:58118 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58566 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58566 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:58566 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58566 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58566 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:58566 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58566 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58566 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:55218 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55218 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:55218 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64715 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64715 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55287 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55287 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:55287 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58354 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58354 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:58354 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50972 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50972 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50972 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53066 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53066 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64887 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64887 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:64887 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64316 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64316 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:64316 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62817 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62817 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:62817 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58768 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58768 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:58768 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57578 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57578 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:57578 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60242 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60242 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59771 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59771 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:59771 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52864 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52864 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64701 - "GET /statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64701 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:64701 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57208 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57208 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57208 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:65204 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65204 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:65204 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61846 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61846 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52837 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52837 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52762 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52762 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52762 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52762 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52762 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52762 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51755 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51755 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56882 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56882 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:55652 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55652 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58467 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58467 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64752 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64752 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53685 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53685 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53586 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53586 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54908 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54908 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54788 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54788 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57637 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57637 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53457 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53457 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65232 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65232 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58782 - "GET /sessions/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58782 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51465 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51465 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:65286 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:65286 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65286 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65286 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59969 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59969 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59969 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:60923 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65204 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65204 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:65204 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:65204 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:65204 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65204 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61108 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61108 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50180 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50180 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50180 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:55946 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55946 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:56647 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56647 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:56647 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56647 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:60284 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60284 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:60284 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53670 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53670 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53670 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53670 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57599 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57599 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57599 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52992 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60911 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60911 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54992 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54992 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58459 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54992 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53678 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53678 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58078 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58078 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55951 - "GET /book/1500 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55951 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56795 - "GET /book/1500 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56795 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56795 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64330 - "GET /book/1500 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64330 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53963 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58010 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58010 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64500 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64500 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57301 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57301 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58361 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58361 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51426 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51426 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:57455 - "GET /sessions/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57455 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54695 - "GET /sessions/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54695 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54695 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54695 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:49733 - "GET /sessions/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49733 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51123 - "GET /sessions/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61240 - "GET /sessions/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61240 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:50721 - "GET /random HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50721 - "GET /statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53916 - "GET /statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53916 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53916 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49333 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49333 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57830 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57830 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57830 - "GET /abandoned/search?search=s&sort_by=abandonment_date HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57830 - "GET /abandoned/search?search=slee&sort_by=abandonment_date HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57919 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57919 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57919 - "GET /library/search?search=stephen&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63628 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63628 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59240 - "GET /completed/search?search=cor&sort_by=completion_date HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64778 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57779 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57779 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57779 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57779 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57779 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55291 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55291 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54756 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54756 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54756 - "GET /library/search?search=king&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63711 - "GET /library/search?search=&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63711 - "GET /book/1500 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63711 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63711 - "GET /series/Cannery%20Row HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64449 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64449 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56219 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56219 - "GET /series/Cannery%20Row HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56219 - "GET /series/Cannery%20Row HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56219 - "GET /series/Cannery%20Row HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56219 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58235 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58235 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58111 - "GET /series/Cannery%20Row HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58111 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54075 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54075 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50620 - "GET /series/Cannery%20Row HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51901 - "GET /series/Cannery%20Row HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51901 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51901 - "GET /author/John%20Steinbeck HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51901 - "GET /genre/Historical%20Fiction HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51901 - "GET /author/John%20Steinbeck HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65376 - "GET /author/John%20Steinbeck HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65376 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:65376 - "GET /series/Cannery%20Row HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65376 - "GET /author/John%20Steinbeck HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65376 - "GET /genre/Historical%20Fiction HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65376 - "GET /statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65376 - "GET /completed?year=2025 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61138 - "GET /author/Brandon%20Sanderson?year=2025 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56740 - "GET /book/775 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55159 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55159 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55159 - "GET /sessions/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57929 - "GET /restore HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62803 - "GET /restore HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61369 - "GET /restore HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61369 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61369 - "GET /book/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61369 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50819 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50819 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:50819 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50819 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50819 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50819 - "GET /statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50819 - "GET /random HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57513 - "GET /random HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57513 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57513 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57513 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53277 - "GET /random HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53277 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53277 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61468 - "GET /random HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61468 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53244 - "GET /random HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53244 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64550 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64550 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54184 - "GET /library?page=2&limit=50&sort_by=date_added&search= HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65138 - "GET /library?page=2&limit=50&sort_by=date_added&search= HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65138 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57258 - "GET /book/1448 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57258 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57258 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:57258 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52346 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56870 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64809 - "GET /statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64809 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62343 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62343 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62343 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62343 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62343 - "GET /statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62343 - "GET /random HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62343 - "POST /random/select HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64286 - "GET /book/1135 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64286 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64286 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64286 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64286 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64286 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64286 - "GET /statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49989 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57381 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57381 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53518 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51726 - "POST /tracker/session/stop/1079 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:51726 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51726 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51300 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51300 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51300 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51300 - "GET /random HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51300 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51300 - "GET /sessions/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60286 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51643 - "POST /tracker/session/stop/1079 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:51643 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51643 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58272 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53424 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53424 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53424 - "GET /sessions/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64282 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55843 - "POST /tracker/session/stop/1079 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:55843 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55843 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:55843 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:55843 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55843 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:55843 - "GET /sessions/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53925 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53925 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64249 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64249 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64249 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:65500 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61424 - "POST /tracker/session/stop/1079 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:61424 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61424 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50479 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61424 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61424 - "GET /favicon.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53858 - "POST /tracker/session/stop/1079 HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:53858 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53858 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53858 - "GET /sessions/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56750 - "GET /random HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56750 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:56750 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56750 - "GET /tbr HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56750 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:56750 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56750 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:56750 - "GET /library/search?search=malfi&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50005 - "GET /tbr/book-status/1460 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62006 - "GET /api/tbr/lists HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62006 - "POST /tbr/add-book HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:62006 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62006 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:60353 - "GET /library/search?search=k&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60353 - "GET /library/search?search=&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60353 - "GET /library/search?search=pet&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60353 - "GET /library/search?search=pet%20seme&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60353 - "GET /library/search?search=pet%20sem&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60353 - "GET /tbr/book-status/1050 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61390 - "GET /api/tbr/lists HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61390 - "POST /tbr/add-book HTTP/1.1" 303 See Other
+INFO:     127.0.0.1:61390 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61390 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:61390 - "GET /tbr HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61390 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:61390 - "GET /tbr/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61390 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:59735 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59735 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found

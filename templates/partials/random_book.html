@@ -51,11 +51,13 @@
     </div>
 
     <div class="random-book-actions">
-        <a href="/book/{{ book.id }}" class="btn btn-secondary"><i class="fa fa-external-link" aria-hidden="true"></i>️ View Details</a>
+        <a href="/book/{{ book.id }}" class="btn btn-secondary"><i class="fa fa-external-link" aria-hidden="true"></i> View Details</a>
+
+        <button class="btn btn-secondary" onclick="openTbrModal({{ book.id }})"><i class="fa fa-bookmark" aria-hidden="true"></i> Add to TBR</button>
 
         {% if status == 'library' %}
         <form method="post" action="/library/read/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Start reading this book?')">
-            <button type="submit" class="btn btn-primary"><i class="fa fa-book" aria-hidden="true"></i> Read This Book</button>
+            <button type="submit" class="btn btn-secondary"><i class="fa fa-book" aria-hidden="true"></i> Read This Book</button>
         </form>
         {% endif %}
 

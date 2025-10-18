@@ -939,6 +939,174 @@ async def restore_database(file: UploadFile = File(...)):
 
 
 # ============================================================================
+# TBR LISTS ROUTES
+# ============================================================================
+
+@app.get("/tbr", response_class=HTMLResponse)
+async def tbr_lists_page(request: Request):
+    """Main TBR lists page showing all lists."""
+    lists = db.get_all_tbr_lists()
+
+    return templates.TemplateResponse("tbr.html", {
+        "request": request,
+        "lists": lists
+    })
+
+
+@app.post("/tbr/create")
+async def create_tbr_list(
+        name: str = Form(...),
+        description: Optional[str] = Form(None)
+):
+    """Create a new TBR list."""
+    list_id = db.create_tbr_list(name=name, description=description)
+    return RedirectResponse(url="/tbr", status_code=303)
+
+
+@app.post("/tbr/edit/{list_id}")
+async def edit_tbr_list(
+        list_id: int,
+        name: str = Form(...),
+        description: Optional[str] = Form(None)
+):
+    """Edit TBR list details."""
+    success = db.update_tbr_list(list_id=list_id, name=name, description=description)
+
+    if not success:
+        raise HTTPException(status_code=404, detail="TBR list not found")
+
+    return RedirectResponse(url="/tbr", status_code=303)
+
+
+@app.post("/tbr/delete/{list_id}")
+async def delete_tbr_list(list_id: int):
+    """Delete a TBR list and all its book associations."""
+    success = db.delete_tbr_list(list_id)
+
+    if not success:
+        raise HTTPException(status_code=404, detail="TBR list not found")
+
+    return RedirectResponse(url="/tbr", status_code=303)
+
+
+@app.get("/tbr/{list_id}", response_class=HTMLResponse)
+async def tbr_list_page(
+        request: Request,
+        list_id: int,
+        page: int = 1,
+        limit: int = 50,
+        sort_by: str = "date_added",
+        search: Optional[str] = None
+):
+    """View books in a specific TBR list."""
+    # Get list details
+    tbr_list = db.get_tbr_list_by_id(list_id)
+    if not tbr_list:
+        raise HTTPException(status_code=404, detail="TBR list not found")
+
+    # Get books in list
+    offset = (page - 1) * limit
+    books, total_count = db.get_books_in_tbr_list(
+        list_id=list_id,
+        limit=limit,
+        offset=offset,
+        sort_by=sort_by,
+        search=search
+    )
+
+    total_pages = (total_count + limit - 1) // limit
+
+    return templates.TemplateResponse("tbr_list.html", {
+        "request": request,
+        "tbr_list": tbr_list,
+        "books": books,
+        "current_page": page,
+        "total_pages": total_pages,
+        "limit": limit,
+        "sort_by": sort_by,
+        "search": search or "",
+        "total_count": total_count
+    })
+
+
+@app.post("/tbr/{list_id}/remove/{book_id}")
+async def remove_book_from_tbr_list(list_id: int, book_id: int):
+    """Remove a book from a TBR list."""
+    success = db.remove_book_from_tbr_list(book_id=book_id, list_id=list_id)
+
+    if not success:
+        raise HTTPException(status_code=404, detail="Book not found in list")
+
+    return RedirectResponse(url=f"/tbr/{list_id}", status_code=303)
+
+
+@app.post("/tbr/add-book")
+async def add_book_to_tbr(
+        book_id: int = Form(...),
+        list_id: int = Form(...),
+        return_url: Optional[str] = Form(None)
+):
+    """Add a book to a TBR list (or move it from another list)."""
+    success = db.add_book_to_tbr_list(book_id=book_id, list_id=list_id)
+
+    if not success:
+        raise HTTPException(status_code=400, detail="Failed to add book to list")
+
+    # Return to the page they came from
+    redirect_url = return_url if return_url else f"/book/{book_id}"
+    return RedirectResponse(url=redirect_url, status_code=303)
+
+
+@app.get("/api/tbr/lists")
+async def get_tbr_lists_json():
+    """API endpoint to get all TBR lists as JSON."""
+    from fastapi.responses import JSONResponse
+
+    lists = db.get_all_tbr_lists()
+
+    return JSONResponse({
+        "lists": lists
+    })
+
+
+@app.get("/tbr/book-status/{book_id}")
+async def get_book_tbr_status(book_id: int):
+    """Get which TBR list a book is currently on (for modal display)."""
+    from fastapi.responses import JSONResponse
+
+    tbr_list = db.get_book_tbr_list(book_id)
+
+    return JSONResponse({
+        "on_list": tbr_list is not None,
+        "list": tbr_list
+    })
+
+
+@app.get("/tbr/{list_id}/search", response_class=HTMLResponse)
+async def tbr_list_search(
+        request: Request,
+        list_id: int,
+        search: str = "",
+        sort_by: str = "date_added",
+        limit: int = 50
+):
+    """HTMX endpoint for real-time TBR list search."""
+    books, total_count = db.get_books_in_tbr_list(
+        list_id=list_id,
+        limit=limit,
+        offset=0,
+        sort_by=sort_by,
+        search=search
+    )
+
+    return templates.TemplateResponse("partials/tbr_list_table.html", {
+        "request": request,
+        "books": books,
+        "total_count": total_count,
+        "list_id": list_id
+    })
+
+# ============================================================================
 # RUN APPLICATION
 # ============================================================================
 

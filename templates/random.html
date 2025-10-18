@@ -16,11 +16,103 @@
         <!-- Random book will appear here -->
     </div>
 </div>
+
+<!-- Add to TBR Modal -->
+<div id="addToTbrModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Add to TBR List</h2>
+            <span class="close" onclick="closeModal('addToTbrModal')">&times;</span>
+        </div>
+        <form method="post" action="/tbr/add-book" id="addToTbrForm">
+            <input type="hidden" name="book_id" id="tbr_book_id">
+            <input type="hidden" name="return_url" id="tbr_return_url">
+
+            <div id="currentListInfo" style="display: none; padding: var(--spacing-md); background: var(--surface); border-radius: var(--radius-md); margin-bottom: var(--spacing-md);">
+                <p class="text-muted" style="margin: 0;">Currently on: <strong id="currentListName"></strong></p>
+            </div>
+
+            <div class="form-group">
+                <label for="list_id">Select TBR List *</label>
+                <select name="list_id" id="list_id" required>
+                    <option value="">-- Select a list --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <p class="text-muted" style="font-size: 0.875rem; margin: 0;">
+                    Don't see the list you want? <a href="/tbr" style="color: var(--accent-primary);">Create a new one</a>
+                </p>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('addToTbrModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add to List</button>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
-    // Add some visual feedback when button is clicked
+    // Modal functions
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    // TBR Modal function
+    async function openTbrModal(bookId) {
+        document.getElementById('tbr_book_id').value = bookId;
+        document.getElementById('tbr_return_url').value = window.location.pathname + window.location.search;
+
+        try {
+            // Get book's current TBR status and all available lists
+            const [statusResponse, listsResponse] = await Promise.all([
+                fetch('/tbr/book-status/' + bookId),
+                fetch('/api/tbr/lists')
+            ]);
+
+            const statusData = await statusResponse.json();
+            const listsData = await listsResponse.json();
+
+            // Show current list info if book is on a list
+            const currentListInfo = document.getElementById('currentListInfo');
+            if (statusData.on_list && statusData.list) {
+                document.getElementById('currentListName').textContent = statusData.list.name;
+                currentListInfo.style.display = 'block';
+            } else {
+                currentListInfo.style.display = 'none';
+            }
+
+            // Populate dropdown with lists
+            const select = document.getElementById('list_id');
+            select.innerHTML = '<option value="">-- Select a list --</option>';
+
+            listsData.lists.forEach(list => {
+                const option = document.createElement('option');
+                option.value = list.id;
+                option.textContent = list.name + ' (' + list.book_count + ' books)';
+                // Pre-select if book is already on this list
+                if (statusData.on_list && statusData.list && statusData.list.id === list.id) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+
+        } catch (error) {
+            console.error('Error loading TBR lists:', error);
+            alert('Error loading TBR lists. Please try again.');
+        }
+
+        openModal('addToTbrModal');
+    }
+
+    // HTMX visual feedback
     document.addEventListener('htmx:beforeRequest', function(evt) {
         const btn = evt.detail.elt;
         if (btn.classList.contains('btn-random')) {
@@ -32,9 +124,16 @@
     document.addEventListener('htmx:afterRequest', function(evt) {
         const btn = evt.detail.elt;
         if (btn.classList.contains('btn-random')) {
-            btn.textContent = 'Pick Random Book';
+            btn.innerHTML = '<i class="fa fa-random" aria-hidden="true"></i> Pick Random Book';
             btn.disabled = false;
         }
     });
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    }
 </script>
 {% endblock %}

@@ -22,6 +22,7 @@
             <ul class="nav-menu">
                 <li><a href="/" class="{% if request.url.path == '/' %}active{% endif %}">Dashboard</a></li>
                 <li><a href="/library" class="{% if request.url.path.startswith('/library') %}active{% endif %}">Library</a></li>
+                <li><a href="/tbr" class="{% if request.url.path.startswith('/tbr') %}active{% endif %}">TBR</a></li>
                 <li><a href="/tracker" class="{% if request.url.path.startswith('/tracker') %}active{% endif %}">Tracker</a></li>
                 <li><a href="/completed" class="{% if request.url.path.startswith('/completed') %}active{% endif %}">Completed</a></li>
                 <li><a href="/abandoned" class="{% if request.url.path.startswith('/abandoned') %}active{% endif %}">Abandoned</a></li>
