@@ -488,20 +488,23 @@ async def abandoned_search(
 @app.get("/sessions/{book_id}", response_class=HTMLResponse)
 async def sessions_page(
         request: Request,
-        book_id: int,
+        book_id: int,  # Keep for URL structure, but don't use for filtering
         week_start: Optional[str] = None,
         page: int = 1,
         limit: int = 50
 ):
-    """Sessions page for a specific book with weekly navigation."""
+    """
+    Sessions page showing ALL reading sessions across ALL books.
+    book_id is kept in URL for consistency but data is not filtered by it.
+    """
     from datetime import datetime, timedelta
 
-    # Get the book details
+    # Get the book details (for header display only)
     book = db.get_book_by_id(book_id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
 
-    # Get book status
+    # Get book status (for header display only)
     status = db.get_book_status(book_id)
 
     # Determine week_start (default to current week's Sunday)
@@ -511,10 +514,10 @@ async def sessions_page(
         current_sunday = today - timedelta(days=days_since_sunday)
         week_start = current_sunday.date().isoformat()
 
-    # Get weekly sessions for the graph
-    weekly_sessions = db.get_weekly_sessions(book_id, week_start)
+    # Get weekly sessions for the graph - ACROSS ALL BOOKS
+    weekly_sessions = db.get_all_weekly_sessions(week_start)
 
-    # Calculate weekly stats
+    # Calculate weekly stats - ALL BOOKS
     total_pages = sum(s['pages_read'] for s in weekly_sessions)
     total_duration = sum(s['duration_seconds'] for s in weekly_sessions)
     reading_days = len(set(s['session_date'] for s in weekly_sessions))
@@ -523,9 +526,9 @@ async def sessions_page(
     if total_duration > 0:
         avg_pages_per_hour = round((total_pages / total_duration) * 3600, 1)
 
-    # Get previous week stats for comparison
+    # Get previous week stats for comparison - ALL BOOKS
     prev_week_start = (datetime.fromisoformat(week_start) - timedelta(days=7)).date().isoformat()
-    prev_weekly_sessions = db.get_weekly_sessions(book_id, prev_week_start)
+    prev_weekly_sessions = db.get_all_weekly_sessions(prev_week_start)
     prev_total_pages = sum(s['pages_read'] for s in prev_weekly_sessions)
     prev_total_duration = sum(s['duration_seconds'] for s in prev_weekly_sessions)
     prev_reading_days = len(set(s['session_date'] for s in prev_weekly_sessions))
@@ -538,9 +541,9 @@ async def sessions_page(
     days_change = reading_days - prev_reading_days
     pace_change = round(avg_pages_per_hour - prev_avg_pages_per_hour, 1)
 
-    # Get all sessions for table (paginated)
+    # Get all sessions for table (paginated) - ACROSS ALL BOOKS
     offset = (page - 1) * limit
-    all_sessions, total_count = db.get_book_sessions(book_id, limit=limit, offset=offset)
+    all_sessions, total_count = db.get_all_sessions(limit=limit, offset=offset)
     total_pages_pagination = (total_count + limit - 1) // limit
 
     # Calculate next and previous week dates

@@ -8,19 +8,8 @@
 
 {% block content %}
 <div class="page-container">
-    <!-- Book Info Header -->
-    <div class="sessions-header">
-        <div class="book-info-compact">
-            {% if book.cover_url %}
-            <img src="{{ book.cover_url }}" alt="{{ book.title }}">
-            {% else %}
-            <div class="table-cover-placeholder">📕</div>
-            {% endif %}
-            <div>
-                <p>Sessions for: <a href="/book/{{ book.id }}">{{ book.title }}</a> by {{ book.author }}</p>
-                <span class="status-badge badge-{{ status }}">{{ status.title() }}</span>
-            </div>
-        </div>
+    <div class="page-header">
+        <h1>Reading Sessions</h1>
     </div>
 
     <!-- Week Navigation -->
@@ -93,18 +82,22 @@
         {% if all_sessions %}
         <div class="table-container">
             <table class="books-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Duration</th>
-                        <th>Pages Read</th>
-                        <th>Page Range</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
                 <tbody>
                     {% for session in all_sessions %}
                     <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                {% if session.cover_url %}
+                                <img src="{{ session.cover_url }}" alt="{{ session.title }}" style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;">
+                                {% else %}
+                                <div class="table-cover-placeholder" style="width: 40px; height: 60px; font-size: 24px;">📕</div>
+                                {% endif %}
+                                <div>
+                                    <strong>{{ session.title }}</strong><br>
+                                    <span class="text-muted">by {{ session.author }}</span>
+                                </div>
+                            </div>
+                        </td>
                         <td>{{ session.session_date }}</td>
                         <td>
                             {% set hours = (session.duration_seconds // 3600) %}

@@ -459,3 +459,92 @@ INFO:     127.0.0.1:55659 - "GET /abandoned HTTP/1.1" 200 OK
 INFO:     127.0.0.1:61925 - "GET /completed HTTP/1.1" 200 OK
 INFO:     127.0.0.1:53937 - "GET /completed HTTP/1.1" 200 OK
 INFO:     127.0.0.1:61654 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55841 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50140 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62234 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51670 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57620 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50344 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57250 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56364 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56364 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50844 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61823 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63799 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53578 - "GET /library/search?search=king&sort_by=date_added HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49468 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59039 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54764 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59039 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59039 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59039 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59039 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53850 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53850 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54132 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54132 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52396 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52396 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57017 - "GET /series/Gunmetal%20Gods HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57017 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52592 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52592 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63727 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63727 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63672 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63672 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57846 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57846 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:60773 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60773 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57168 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57168 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59500 - "GET /abandoned HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59500 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58927 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58927 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59092 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59092 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52672 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53777 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53777 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53777 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53777 - "GET /sessions/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50067 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50067 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:50067 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50704 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50704 - "GET /sessions/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60865 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60865 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64568 - "GET /logo.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51263 - "GET /tracker HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51263 - "GET /sessions/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51263 - "GET /sessions/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51263 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57094 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57094 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59250 - "GET /sessions/1079 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59250 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53710 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59250 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61583 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61583 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59998 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56692 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56692 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56692 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56692 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62708 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51572 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51572 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62633 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52971 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52971 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53926 - "GET /logo.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52971 - "GET /favicon.png HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63459 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52250 - "GET /sessions/1283 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52616 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52616 - "GET /completed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52616 - "GET /sessions/722 HTTP/1.1" 200 OK

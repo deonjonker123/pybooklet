@@ -754,6 +754,65 @@ def get_weekly_sessions(book_id: int, week_start: str) -> List[Dict]:
 
     return sessions
 
+def get_all_sessions(
+        limit: int = 50,
+        offset: int = 0
+) -> tuple[List[Dict], int]:
+    """
+    Get all reading sessions across ALL books.
+    Returns (sessions, total_count).
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Get total count
+    cursor.execute("""
+                   SELECT COUNT(*) as count
+                   FROM reading_sessions
+                   """)
+    total_count = cursor.fetchone()["count"]
+
+    # Get sessions with book info
+    cursor.execute("""
+                   SELECT rs.*, b.title, b.author, b.cover_url
+                   FROM reading_sessions rs
+                   JOIN books b ON rs.book_id = b.id
+                   ORDER BY rs.session_date DESC, rs.start_time DESC 
+                   LIMIT ? OFFSET ?
+                   """, (limit, offset))
+
+    sessions = [dict(row) for row in cursor.fetchall()]
+
+    conn.close()
+    return sessions, total_count
+
+
+def get_all_weekly_sessions(week_start: str) -> List[Dict]:
+    """
+    Get all sessions across ALL books in a specific week (Sunday to Saturday).
+    week_start should be the Sunday date in ISO format (YYYY-MM-DD).
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Calculate week end (Saturday)
+    from datetime import datetime, timedelta
+    start_date = datetime.fromisoformat(week_start)
+    end_date = start_date + timedelta(days=6)
+
+    cursor.execute("""
+                   SELECT rs.*, b.title, b.author, b.cover_url
+                   FROM reading_sessions rs
+                   JOIN books b ON rs.book_id = b.id
+                   WHERE rs.session_date BETWEEN ? AND ?
+                   ORDER BY rs.session_date, rs.start_time
+                   """, (week_start, end_date.date().isoformat()))
+
+    sessions = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+
+    return sessions
+
 
 def delete_session(session_id: int) -> bool:
     """Delete a reading session."""
