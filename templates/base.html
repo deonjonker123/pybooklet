@@ -11,14 +11,23 @@
     {% block extra_head %}{% endblock %}
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <a style="color: #e5e7eb" href="/">
-                    <img src="/static/logo.png" alt="Booklet" style="height: auto; width: 128px; vertical-align: middle;">
-                </a>
-            </div>
+    <!-- Top Header Bar -->
+    <header class="top-header">
+        <div class="header-brand">
+            <a href="/">
+                <img src="/static/logo.png" alt="Booklet" style="height: auto; width: 128px;">
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Right Sidebar Navigation -->
+    <aside class="sidebar-nav">
+        <nav class="sidebar-menu">
             <ul class="nav-menu">
                 <li><a href="/" class="{% if request.url.path == '/' %}active{% endif %}">Dashboard</a></li>
                 <li><a href="/library" class="{% if request.url.path.startswith('/library') %}active{% endif %}">Library</a></li>
@@ -29,22 +38,21 @@
                 <li><a href="/statistics" class="{% if request.url.path.startswith('/statistics') %}active{% endif %}">Statistics</a></li>
                 <li><a href="/random" class="{% if request.url.path.startswith('/random') %}active{% endif %}">Random</a></li>
             </ul>
-            <div class="nav-actions">
-                <a href="/backup" class="btn-backup" title="Backup Database"><i class="fa fa-floppy-o" aria-hidden="true"></i> Backup</a>
-                <a href="/restore" class="btn-restore" title="Restore Database"><i class="fa fa-repeat" aria-hidden="true"></i> Restore</a>
-            </div>
+        </nav>
+
+        <div class="sidebar-actions">
+            <a href="/backup" class="btn-backup" title="Backup Database">
+                <i class="fa fa-floppy-o" aria-hidden="true"></i> Backup
+            </a>
+            <a href="/restore" class="btn-restore" title="Restore Database">
+                <i class="fa fa-repeat" aria-hidden="true"></i> Restore
+            </a>
         </div>
-    </nav>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        {% block content %}{% endblock %}
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2025 Booklet - Personal Reading Tracker</p>
-    </footer>
+        <footer class="sidebar-footer">
+            <p>&copy; 2025 Booklet</p>
+        </footer>
+    </aside>
 
     <!-- Global Scripts -->
     <script>

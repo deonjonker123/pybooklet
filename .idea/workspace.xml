@@ -4,21 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4beb65f4-2998-4a98-b8ba-18053c98c895" name="Changes" comment="Look update">
-      <change afterPath="$PROJECT_DIR$/templates/partials/tbr_list_table.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/tbr.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/tbr_list.html" afterDir="false" />
+    <list default="true" id="4beb65f4-2998-4a98-b8ba-18053c98c895" name="Changes" comment="Added TBR">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/error.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/output.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/output.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pybooklet.db" beforeDir="false" afterPath="$PROJECT_DIR$/pybooklet.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/library.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/library.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/partials/library_table.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/library_table.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/partials/random_book.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/random_book.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/random.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/random.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +92,8 @@
       <workItem from="1760787789941" duration="5088000" />
       <workItem from="1760795858804" duration="106000" />
       <workItem from="1760806388290" duration="579000" />
-      <workItem from="1760807266058" duration="1803000" />
+      <workItem from="1760807266058" duration="2003000" />
+      <workItem from="1760809908703" duration="887000" />
     </task>
     <task id="LOCAL-00001" summary="Initial">
       <option name="closed" value="true" />
@@ -224,7 +215,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760806959778</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Added TBR">
+      <option name="closed" value="true" />
+      <created>1760809743752</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1760809743752</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -238,6 +237,7 @@
     <MESSAGE value="Bug fixes" />
     <MESSAGE value="Done" />
     <MESSAGE value="Look update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Look update" />
+    <MESSAGE value="Added TBR" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added TBR" />
   </component>
 </project>
