@@ -9,7 +9,6 @@
     <!-- Stats Cards -->
     <div class="stats-grid">
         <div class="stat-card">
-            <div class="stat-icon">📚</div>
             <div class="stat-content">
                 <h3>Total Books</h3>
                 <a href="/library"><p class="stat-number">{{ stats.total_books }}</p></a>
@@ -18,7 +17,6 @@
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon">📖</div>
             <div class="stat-content">
                 <h3>Unread</h3>
                 <a href="/library"><p class="stat-number">{{ stats.library_count }}</p></a>
@@ -27,7 +25,6 @@
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon">✅</div>
             <div class="stat-content">
                 <h3>Completed</h3>
                 <a href="/completed"><p class="stat-number">{{ stats.completed_count }}</p></a>
@@ -36,7 +33,6 @@
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon">❌</div>
             <div class="stat-content">
                 <h3>Abandoned</h3>
                 <a href="/abandoned"><p class="stat-number">{{ stats.abandoned_count }}</p></a>
@@ -91,25 +87,6 @@
                 <a href="/library" class="btn btn-primary">Browse Library</a>
             </div>
         {% endif %}
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="quick-actions">
-        <h2>Quick Actions</h2>
-        <div class="action-buttons">
-            <a href="/library" class="action-btn">
-                <span class="action-icon">📚</span>
-                <span>Browse Library</span>
-            </a>
-            <a href="/random" class="action-btn">
-                <span class="action-icon">🎲</span>
-                <span>Pick Random Book</span>
-            </a>
-            <a href="/statistics" class="action-btn">
-                <span class="action-icon">📊</span>
-                <span>View Statistics</span>
-            </a>
-        </div>
     </div>
 </div>
 {% endblock %}

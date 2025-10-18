@@ -4,34 +4,34 @@
 
 :root {
     /* Dark Color Palette - Darker Greys */
-    --bg-primary: #0d0d0e;
-    --bg-secondary: #141416;
-    --bg-tertiary: #1a1a1c;
-    --surface: #1f1f21;
-    --surface-hover: #262628;
+    --bg-primary: #0d0d0d;
+    --bg-secondary: #1a1a1a;
+    --bg-tertiary: #1e1e1e;
+    --surface: #272727;
+    --surface-hover: #434444;
 
     /* Accent Colors */
-    --accent-primary: #6ba3bf;
-    --accent-primary-dark: #4a7d96;
-    --accent-secondary: #8fc4d9;
-    --accent-cyan: #4dd4d4;
-    --accent-pink: #ff6b6b;
-    --accent-green: #6bcc70;
-    --accent-red: #ff6b6b;
-    --accent-orange: #ff9f4a;
+    --accent-primary: #e4a124;
+    --accent-primary-dark: #a56e25;
+    --accent-secondary: #ad8b72;
+    --accent-cyan: #73a8ac;
+    --accent-pink: #e75da1;
+    --accent-green: #1db681;
+    --accent-red: #ef4444;
+    --accent-orange: #f49f1e;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, #6ba3bf 0%, #8fc4d9 100%);
-    --gradient-secondary: linear-gradient(135deg, #8fc4d9 0%, #c4e3f0 100%);
-    --gradient-danger: linear-gradient(135deg, #ff6b6b 0%, #ff9f9f 100%);
-    --gradient-success: linear-gradient(135deg, #6bcc70 0%, #a3e6a8 100%);
-    --gradient-dark: linear-gradient(135deg, #1a1a1c 0%, #262628 100%);
+    --gradient-primary: #e4a124;
+    --gradient-secondary: #ad8b72;
+    --gradient-danger: #ef4444;
+    --gradient-success: #1db681;
+    --gradient-dark: #1a1a1a;
 
     /* Text Colors */
-    --text-primary: #eff1f3;
-    --text-secondary: #b0b5ba;
-    --text-muted: #787d85;
-    --text-inverse: #0d0d0e;
+    --text-primary: #ffffff;
+    --text-secondary: #6c7381;
+    --text-muted: #606060;
+    --text-inverse: #0d0d0d;
 
     /* Border & Dividers */
     --border-color: #2a2a2c;
@@ -88,12 +88,12 @@ body {
 
 a {
     text-decoration: none;
-    color: var(--accent-primary);
+    color: var(--text-primary);
     transition: color var(--transition-fast);
 }
 
 a:hover {
-    color: var(--accent-secondary);
+    color: var(--text-secondary);
 }
 
 /* ============================================================================
@@ -749,7 +749,7 @@ p {
 .progress-bar {
     width: 100%;
     height: 6px;
-    background-color: var(--bg-secondary);
+    background-color: var(--bg-tertiary);
     border-radius: var(--radius-full);
     overflow: hidden;
     margin-bottom: var(--spacing-xs);
@@ -1104,7 +1104,7 @@ p {
 
 /* Timer Button */
 .btn-timer {
-    background: var(--accent-orange);
+    background: var(--accent-pink);
     color: white;
 }
 
