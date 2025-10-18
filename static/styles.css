@@ -41,7 +41,7 @@
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
     --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.5);
     --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.6);
-    --shadow-glow: 0 0 20px rgba(107, 163, 191, 0.25);
+    --shadow-glow: 0 0 20px rgba(229, 161, 36, 0.25);
 
     /* Compact Spacing */
     --spacing-xs: 0.25rem;
