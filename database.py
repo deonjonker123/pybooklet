@@ -1412,55 +1412,19 @@ def delete_tbr_list(list_id: int) -> bool:
     return success
 
 
-def get_books_in_tbr_list(
-        list_id: int,
-        limit: int = 50,
-        offset: int = 0,
-        sort_by: str = "date_added",
-        search: str = None
-) -> tuple[List[Dict], int]:
+def get_books_in_tbr_list(list_id: int) -> List[Dict]:
     """
-    Get all books in a specific TBR list with their current status.
-    Returns (books, total_count).
+    Get all books in a specific TBR list ordered by position.
+    Returns list of books.
     """
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    where_conditions = ["tlb.list_id = ?"]
-    params = [list_id]
-
-    if search:
-        where_conditions.append("""
-            (b.title LIKE ? OR b.author LIKE ? OR b.series LIKE ? OR b.genre LIKE ?)
-        """)
-        search_param = f"%{search}%"
-        params.extend([search_param, search_param, search_param, search_param])
-
-    where_clause = " AND ".join(where_conditions)
-
-    # Get total count
-    count_query = f"""
-        SELECT COUNT(*) as count
-        FROM tbr_list_books tlb
-        JOIN books b ON tlb.book_id = b.id
-        WHERE {where_clause}
-    """
-    cursor.execute(count_query, params)
-    total_count = cursor.fetchone()["count"]
-
-    # Get books with their status
-    valid_sorts = {
-        "author": "b.author",
-        "title": "b.title",
-        "page_count": "b.page_count",
-        "date_added": "tlb.date_added"
-    }
-    sort_column = valid_sorts.get(sort_by, "tlb.date_added")
-
-    query = f"""
+    query = """
         SELECT 
             b.*,
             tlb.date_added as list_date_added,
+            tlb.position,
             CASE
                 WHEN EXISTS (SELECT 1 FROM reading_tracker WHERE book_id = b.id) THEN 'tracking'
                 WHEN EXISTS (SELECT 1 FROM completed_books WHERE book_id = b.id) THEN 'completed'
@@ -1469,17 +1433,15 @@ def get_books_in_tbr_list(
             END as status
         FROM tbr_list_books tlb
         JOIN books b ON tlb.book_id = b.id
-        WHERE {where_clause}
-        ORDER BY {sort_column} DESC
-        LIMIT ? OFFSET ?
+        WHERE tlb.list_id = ?
+        ORDER BY tlb.position ASC
     """
-    params.extend([limit, offset])
 
-    cursor.execute(query, params)
+    cursor.execute(query, (list_id,))
     books = [dict(row) for row in cursor.fetchall()]
 
     conn.close()
-    return books, total_count
+    return books
 
 
 def add_book_to_tbr_list(book_id: int, list_id: int) -> bool:
@@ -1490,20 +1452,159 @@ def add_book_to_tbr_list(book_id: int, list_id: int) -> bool:
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Remove from any existing list first (UNIQUE constraint ensures only one list)
+    # Remove from any existing list first
     cursor.execute("DELETE FROM tbr_list_books WHERE book_id = ?", (book_id,))
+
+    # Get the next position (max position + 1)
+    cursor.execute("""
+                   SELECT COALESCE(MAX(position), -1) + 1 as next_pos
+                   FROM tbr_list_books
+                   WHERE list_id = ?
+                   """, (list_id,))
+
+    next_position = cursor.fetchone()["next_pos"]
 
     # Add to new list
     cursor.execute("""
-                   INSERT INTO tbr_list_books (list_id, book_id, date_added)
-                   VALUES (?, ?, ?)
-                   """, (list_id, book_id, datetime.now().date().isoformat()))
+                   INSERT INTO tbr_list_books (list_id, book_id, date_added, position)
+                   VALUES (?, ?, ?, ?)
+                   """, (list_id, book_id, datetime.now().date().isoformat(), next_position))
 
     conn.commit()
     conn.close()
 
     return True
 
+
+def move_book_up(book_id: int, list_id: int) -> bool:
+    """Move a book up in the TBR list (decrease position)."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Get current position
+    cursor.execute("""
+                   SELECT position
+                   FROM tbr_list_books
+                   WHERE book_id = ?
+                     AND list_id = ?
+                   """, (book_id, list_id))
+
+    result = cursor.fetchone()
+    if not result:
+        conn.close()
+        return False
+
+    current_pos = result["position"]
+
+    # Can't move up if already at position 0
+    if current_pos == 0:
+        conn.close()
+        return False
+
+    # Get the book that's one position above
+    cursor.execute("""
+                   SELECT book_id
+                   FROM tbr_list_books
+                   WHERE list_id = ?
+                     AND position = ?
+                   """, (list_id, current_pos - 1))
+
+    above_book = cursor.fetchone()
+    if not above_book:
+        conn.close()
+        return False
+
+    above_book_id = above_book["book_id"]
+
+    # Swap positions
+    cursor.execute("""
+                   UPDATE tbr_list_books
+                   SET position = ?
+                   WHERE book_id = ?
+                     AND list_id = ?
+                   """, (current_pos, above_book_id, list_id))
+
+    cursor.execute("""
+                   UPDATE tbr_list_books
+                   SET position = ?
+                   WHERE book_id = ?
+                     AND list_id = ?
+                   """, (current_pos - 1, book_id, list_id))
+
+    conn.commit()
+    conn.close()
+
+    return True
+
+
+def move_book_down(book_id: int, list_id: int) -> bool:
+    """Move a book down in the TBR list (increase position)."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Get current position and max position
+    cursor.execute("""
+                   SELECT position
+                   FROM tbr_list_books
+                   WHERE book_id = ?
+                     AND list_id = ?
+                   """, (book_id, list_id))
+
+    result = cursor.fetchone()
+    if not result:
+        conn.close()
+        return False
+
+    current_pos = result["position"]
+
+    # Get max position in list
+    cursor.execute("""
+                   SELECT MAX(position) as max_pos
+                   FROM tbr_list_books
+                   WHERE list_id = ?
+                   """, (list_id,))
+
+    max_pos = cursor.fetchone()["max_pos"]
+
+    # Can't move down if already at bottom
+    if current_pos >= max_pos:
+        conn.close()
+        return False
+
+    # Get the book that's one position below
+    cursor.execute("""
+                   SELECT book_id
+                   FROM tbr_list_books
+                   WHERE list_id = ?
+                     AND position = ?
+                   """, (list_id, current_pos + 1))
+
+    below_book = cursor.fetchone()
+    if not below_book:
+        conn.close()
+        return False
+
+    below_book_id = below_book["book_id"]
+
+    # Swap positions
+    cursor.execute("""
+                   UPDATE tbr_list_books
+                   SET position = ?
+                   WHERE book_id = ?
+                     AND list_id = ?
+                   """, (current_pos, below_book_id, list_id))
+
+    cursor.execute("""
+                   UPDATE tbr_list_books
+                   SET position = ?
+                   WHERE book_id = ?
+                     AND list_id = ?
+                   """, (current_pos + 1, book_id, list_id))
+
+    conn.commit()
+    conn.close()
+
+    return True
 
 def remove_book_from_tbr_list(book_id: int, list_id: int) -> bool:
     """Remove a book from a specific TBR list."""

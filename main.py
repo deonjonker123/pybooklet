@@ -990,42 +990,21 @@ async def delete_tbr_list(list_id: int):
 
 
 @app.get("/tbr/{list_id}", response_class=HTMLResponse)
-async def tbr_list_page(
-        request: Request,
-        list_id: int,
-        page: int = 1,
-        limit: int = 50,
-        sort_by: str = "date_added",
-        search: Optional[str] = None
-):
+async def tbr_list_page(request: Request, list_id: int):
     """View books in a specific TBR list."""
     # Get list details
     tbr_list = db.get_tbr_list_by_id(list_id)
     if not tbr_list:
         raise HTTPException(status_code=404, detail="TBR list not found")
 
-    # Get books in list
-    offset = (page - 1) * limit
-    books, total_count = db.get_books_in_tbr_list(
-        list_id=list_id,
-        limit=limit,
-        offset=offset,
-        sort_by=sort_by,
-        search=search
-    )
-
-    total_pages = (total_count + limit - 1) // limit
+    # Get books in list (no pagination, no search, no sort)
+    books = db.get_books_in_tbr_list(list_id=list_id)
 
     return templates.TemplateResponse("tbr_list.html", {
         "request": request,
         "tbr_list": tbr_list,
         "books": books,
-        "current_page": page,
-        "total_pages": total_pages,
-        "limit": limit,
-        "sort_by": sort_by,
-        "search": search or "",
-        "total_count": total_count
+        "total_count": len(books)
     })
 
 
@@ -1068,6 +1047,26 @@ async def get_tbr_lists_json():
         "lists": lists
     })
 
+@app.post("/tbr/{list_id}/move-up/{book_id}")
+async def move_book_up_in_list(list_id: int, book_id: int):
+    """Move a book up in the TBR list."""
+    success = db.move_book_up(book_id=book_id, list_id=list_id)
+
+    if not success:
+        raise HTTPException(status_code=400, detail="Cannot move book up")
+
+    return RedirectResponse(url=f"/tbr/{list_id}", status_code=303)
+
+
+@app.post("/tbr/{list_id}/move-down/{book_id}")
+async def move_book_down_in_list(list_id: int, book_id: int):
+    """Move a book down in the TBR list."""
+    success = db.move_book_down(book_id=book_id, list_id=list_id)
+
+    if not success:
+        raise HTTPException(status_code=400, detail="Cannot move book down")
+
+    return RedirectResponse(url=f"/tbr/{list_id}", status_code=303)
 
 @app.get("/tbr/book-status/{book_id}")
 async def get_book_tbr_status(book_id: int):
@@ -1079,31 +1078,6 @@ async def get_book_tbr_status(book_id: int):
     return JSONResponse({
         "on_list": tbr_list is not None,
         "list": tbr_list
-    })
-
-
-@app.get("/tbr/{list_id}/search", response_class=HTMLResponse)
-async def tbr_list_search(
-        request: Request,
-        list_id: int,
-        search: str = "",
-        sort_by: str = "date_added",
-        limit: int = 50
-):
-    """HTMX endpoint for real-time TBR list search."""
-    books, total_count = db.get_books_in_tbr_list(
-        list_id=list_id,
-        limit=limit,
-        offset=0,
-        sort_by=sort_by,
-        search=search
-    )
-
-    return templates.TemplateResponse("partials/tbr_list_table.html", {
-        "request": request,
-        "books": books,
-        "total_count": total_count,
-        "list_id": list_id
     })
 
 # ============================================================================

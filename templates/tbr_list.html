@@ -14,53 +14,24 @@
         <a href="/tbr" class="btn btn-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Lists</a>
     </div>
 
-    <!-- Search and Sort -->
-    <div class="controls-bar">
-        <div class="search-box">
-            <input
-                type="text"
-                id="searchInput"
-                name="search"
-                placeholder="Search books in this list..."
-                value="{{ search }}"
-                hx-get="/tbr/{{ tbr_list.id }}/search"
-                hx-trigger="keyup changed delay:300ms"
-                hx-target="#booksTableBody"
-                hx-include="#sortBy"
-            >
-        </div>
-        <div class="sort-box">
-            <label for="sortBy">Sort by:</label>
-            <select name="sort_by" id="sortBy" hx-get="/tbr/{{ tbr_list.id }}/search" hx-trigger="change" hx-target="#booksTableBody" hx-include="#searchInput">
-                <option value="date_added" {% if sort_by == 'date_added' %}selected{% endif %}>Date Added</option>
-                <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Title</option>
-                <option value="author" {% if sort_by == 'author' %}selected{% endif %}>Author</option>
-                <option value="page_count" {% if sort_by == 'page_count' %}selected{% endif %}>Page Count</option>
-            </select>
-        </div>
-        <div class="results-count">
-            <span>{{ total_count }} book(s)</span>
-        </div>
-    </div>
-
-    <!-- Books Table -->
     {% if books %}
     <div class="table-container">
         <table class="books-table">
-            <thead>
-                <tr>
-                    <th>Cover</th>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Genre</th>
-                    <th>Pages</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="booksTableBody">
+            <tbody>
                 {% for book in books %}
                 <tr>
+                    <td class="cover-cell">
+                        {% if loop.index > 1 %}
+                        <form method="post" action="/tbr/{{ tbr_list.id }}/move-up/{{ book.id }}" style="display: inline;">
+                            <button type="submit" class="btn-icon" title="Move Up"><i class="fa fa-arrow-up" aria-hidden="true"></i></button>
+                        </form>
+                        {% endif %}
+                        {% if not loop.last %}
+                        <form method="post" action="/tbr/{{ tbr_list.id }}/move-down/{{ book.id }}" style="display: inline;">
+                            <button type="submit" class="btn-icon" title="Move Down"><i class="fa fa-arrow-down" aria-hidden="true"></i></button>
+                        </form>
+                        {% endif %}
+                    </td>
                     <td class="cover-cell">
                         {% if book.cover_url %}
                         <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="table-cover">
@@ -100,13 +71,9 @@
                         {% endif %}
                     </td>
                     <td class="actions-cell">
+
                         <a href="/book/{{ book.id }}" class="btn-icon" title="Open"><i class="fa fa-external-link" aria-hidden="true"></i></a>
-                        {% if book.status == 'library' %}
-                        <form method="post" action="/library/read/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Start reading this book?')">
-                            <button type="submit" class="btn-icon" title="Read"><i class="fa fa-book" aria-hidden="true"></i></button>
-                        </form>
-                        {% endif %}
-                        <form method="post" action="/tbr/{{ tbr_list.id }}/remove/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Remove this book from the list?')">
+                        <form method="post" action="/tbr/{{ tbr_list.id }}/remove/{{ book.id }}" style="display: inline;" onsubmit="return confirm('Remove {{ book.title }} from this list?')">
                             <button type="submit" class="btn-icon btn-danger" title="Remove from List"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
                         </form>
                     </td>
@@ -115,25 +82,11 @@
             </tbody>
         </table>
     </div>
-
-    <!-- Pagination -->
-    {% if total_pages > 1 %}
-    <div class="pagination">
-        {% if current_page > 1 %}
-        <a href="/tbr/{{ tbr_list.id }}?page={{ current_page - 1 }}&limit={{ limit }}&sort_by={{ sort_by }}&search={{ search }}" class="btn btn-secondary">Previous</a>
-        {% endif %}
-
-        <span class="pagination-info">Page {{ current_page }} of {{ total_pages }}</span>
-
-        {% if current_page < total_pages %}
-        <a href="/tbr/{{ tbr_list.id }}?page={{ current_page + 1 }}&limit={{ limit }}&sort_by={{ sort_by }}&search={{ search }}" class="btn btn-secondary">Next</a>
-        {% endif %}
-    </div>
-    {% endif %}
     {% else %}
     <div class="empty-state">
         <p>No books in this list yet!</p>
-        <p class="text-muted">Add books from your Library, Completed, or Abandoned pages using the bookmark icon.</p>
+        <p class="text-muted">Add books from your library to start building your reading list.</p>
+        <a href="/library" class="btn btn-primary"><i class="fa fa-book" aria-hidden="true"></i> Browse Library</a>
     </div>
     {% endif %}
 </div>

@@ -4,11 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4beb65f4-2998-4a98-b8ba-18053c98c895" name="Changes" comment="Added TBR">
+    <list default="true" id="4beb65f4-2998-4a98-b8ba-18053c98c895" name="Changes" comment="New layout">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/output.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/output.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pybooklet.db" beforeDir="false" afterPath="$PROJECT_DIR$/pybooklet.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/tbr_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tbr_list.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +96,9 @@
       <workItem from="1760795858804" duration="106000" />
       <workItem from="1760806388290" duration="579000" />
       <workItem from="1760807266058" duration="2003000" />
-      <workItem from="1760809908703" duration="887000" />
+      <workItem from="1760809908703" duration="1017000" />
+      <workItem from="1760887573140" duration="260000" />
+      <workItem from="1760901811736" duration="435000" />
     </task>
     <task id="LOCAL-00001" summary="Initial">
       <option name="closed" value="true" />
@@ -223,7 +228,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760809743752</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="New layout">
+      <option name="closed" value="true" />
+      <created>1760810846632</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1760810846632</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -238,6 +251,7 @@
     <MESSAGE value="Done" />
     <MESSAGE value="Look update" />
     <MESSAGE value="Added TBR" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added TBR" />
+    <MESSAGE value="New layout" />
+    <option name="LAST_COMMIT_MESSAGE" value="New layout" />
   </component>
 </project>
