@@ -8,33 +8,29 @@
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-content">
-                <h3>Total Books</h3>
-                <a href="/library"><p class="stat-number">{{ stats.total_books }}</p></a>
-                <span class="stat-label">In your collection</span>
+                <a href="/library"><p class="stat-number">{{ stats.total_books }} Total Books</p></a>
+                <span class="stat-label">In the collection</span>
             </div>
         </div>
 
         <div class="stat-card">
             <div class="stat-content">
-                <h3>Unread</h3>
-                <a href="/library"><p class="stat-number">{{ stats.library_count }}</p></a>
-                <span class="stat-label">Waiting to be read</span>
+                <a href="/library"><p class="stat-number">{{ stats.library_count }} Unread Books</p></a>
+                <span class="stat-label">Get to it!</span>
             </div>
         </div>
 
         <div class="stat-card">
             <div class="stat-content">
-                <h3>Completed</h3>
-                <a href="/completed"><p class="stat-number">{{ stats.completed_count }}</p></a>
-                <span class="stat-label">Books finished</span>
+                <a href="/completed"><p class="stat-number">{{ stats.completed_count }} Completed Books</p></a>
+                <span class="stat-label">More! Need more! Hurry!</span>
             </div>
         </div>
 
         <div class="stat-card">
             <div class="stat-content">
-                <h3>Abandoned</h3>
-                <a href="/abandoned"><p class="stat-number">{{ stats.abandoned_count }}</p></a>
-                <span class="stat-label">Books set aside</span>
+                <a href="/abandoned"><p class="stat-number">{{ stats.abandoned_count }} Abandoned Books</p></a>
+                <span class="stat-label">Because they sucked!</span>
             </div>
         </div>
     </div>
