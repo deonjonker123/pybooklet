@@ -1151,7 +1151,9 @@ def get_books_by_genre(genre_name: str) -> List[Dict]:
 def get_random_book(
         exclude_author: str = None,
         exclude_genre: str = None,
-        max_page_count: int = None
+        max_page_count: int = None,
+        genre: str = None,
+        author: str = None
 ) -> Optional[Dict]:
     """
     Get a random book from the library with optional filters.
@@ -1179,6 +1181,14 @@ def get_random_book(
         where_conditions.append("page_count < ?")
         params.append(max_page_count)
 
+    if genre:
+        where_conditions.append("LOWER(genre) = LOWER(?)")
+        params.append(genre)
+
+    if author:
+        where_conditions.append("LOWER(author) = LOWER(?)")
+        params.append(author)
+
     where_clause = " AND ".join(where_conditions)
 
     cursor.execute(f"""
@@ -1192,6 +1202,36 @@ def get_random_book(
     conn.close()
 
     return dict(row) if row else None
+
+
+def get_random_filter_options() -> Dict[str, List[str]]:
+    """Get distinct genres and authors among unread library books."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    unread_clause = """
+        id NOT IN (SELECT book_id FROM reading_tracker)
+        AND id NOT IN (SELECT book_id FROM completed_books)
+        AND id NOT IN (SELECT book_id FROM abandoned_books)
+    """
+
+    cursor.execute(f"""
+        SELECT DISTINCT genre FROM books
+        WHERE {unread_clause} AND genre IS NOT NULL AND genre != ''
+        ORDER BY genre COLLATE NOCASE
+    """)
+    genres = [row['genre'] for row in cursor.fetchall()]
+
+    cursor.execute(f"""
+        SELECT DISTINCT author FROM books
+        WHERE {unread_clause} AND author IS NOT NULL AND author != ''
+        ORDER BY author COLLATE NOCASE
+    """)
+    authors = [row['author'] for row in cursor.fetchall()]
+
+    conn.close()
+
+    return {"genres": genres, "authors": authors}
 
 
 def get_last_completed_book() -> Optional[Dict]:

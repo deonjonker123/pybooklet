@@ -1408,6 +1408,14 @@ p {
     margin: var(--spacing-2xl) 0;
 }
 
+.random-filters {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-xl);
+}
+
 .btn-random {
     padding: var(--spacing-lg) var(--spacing-2xl);
     font-size: 1rem;

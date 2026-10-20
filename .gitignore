@@ -1,0 +1,6 @@
+# created by virtualenv automatically
+*.db
+*.sqlite
+*.sqlite3
+build/
+dist/

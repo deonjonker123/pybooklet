@@ -654,15 +654,29 @@ async def statistics_page(request: Request, year: Optional[int] = None):
 @app.get("/random", response_class=HTMLResponse)
 async def random_book_page(request: Request):
     """Random book selector page."""
+    filter_options = db.get_random_filter_options()
+
     return templates.TemplateResponse("random.html", {
         "request": request,
-        "book": None
+        "book": None,
+        "genres": filter_options["genres"],
+        "authors": filter_options["authors"]
     })
 
 
 @app.post("/random/select", response_class=HTMLResponse)
-async def select_random_book(request: Request):
-    """Select a random book with smart filtering based on last completed."""
+async def select_random_book(
+        request: Request,
+        genre: Optional[str] = Form(None),
+        author: Optional[str] = Form(None)
+):
+    """Select a random book with smart filtering based on last completed.
+
+    A chosen genre or author overrides its matching smart rule and the page count rule.
+    """
+    genre = genre or None
+    author = author or None
+
     # Get last completed book for smart rules
     last_completed = db.get_last_completed_book()
 
@@ -671,19 +685,23 @@ async def select_random_book(request: Request):
     max_page_count = None
 
     if last_completed:
-        # Apply smart rules
-        exclude_author = last_completed.get('author')
-        exclude_genre = last_completed.get('genre')
+        # Apply smart rules, skipping any that a chosen filter overrides
+        if not author:
+            exclude_author = last_completed.get('author')
+        if not genre:
+            exclude_genre = last_completed.get('genre')
 
         # If last book was > 800 pages, select book < 600 pages
-        if last_completed.get('page_count', 0) > 800:
+        if not genre and not author and last_completed.get('page_count', 0) > 800:
             max_page_count = 600
 
     # Get random book
     book = db.get_random_book(
         exclude_author=exclude_author,
         exclude_genre=exclude_genre,
-        max_page_count=max_page_count
+        max_page_count=max_page_count,
+        genre=genre,
+        author=author
     )
 
     # Get book status if found
@@ -694,7 +712,8 @@ async def select_random_book(request: Request):
     return templates.TemplateResponse("partials/random_book.html", {
         "request": request,
         "book": book,
-        "status": status
+        "status": status,
+        "filtered": bool(genre or author)
     })
 
 

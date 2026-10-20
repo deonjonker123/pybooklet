@@ -3,18 +3,31 @@
 {% block title %}Random Book - Booklet{% endblock %}
 
 {% block content %}
-<div class="random-container">
-    <h1>Random Book Selector</h1>
-
-    <div class="random-button-container">
-        <button class="btn-random" hx-post="/random/select" hx-target="#randomResult" hx-swap="innerHTML">
-            <i class="fa fa-random" aria-hidden="true"></i> Pick Random Book
-        </button>
+<form id="randomFilters" class="random-filters" onsubmit="return false;">
+    <div class="sort-box">
+        <label for="randomGenre">Genre:</label>
+        <select name="genre" id="randomGenre">
+            <option value="">Any</option>
+            {% for g in genres %}
+            <option value="{{ g }}">{{ g }}</option>
+            {% endfor %}
+        </select>
     </div>
-
-    <div id="randomResult">
-        <!-- Random book will appear here -->
+    <div class="sort-box">
+        <label for="randomAuthor">Author:</label>
+        <select name="author" id="randomAuthor">
+            <option value="">Any</option>
+            {% for a in authors %}
+            <option value="{{ a }}">{{ a }}</option>
+            {% endfor %}
+        </select>
     </div>
+</form>
+
+<div class="random-button-container">
+    <button class="btn-random" hx-post="/random/select" hx-target="#randomResult" hx-swap="innerHTML" hx-include="#randomFilters">
+        <i class="fa fa-random" aria-hidden="true"></i> Pick Random Book
+    </button>
 </div>
 
 <!-- Add to TBR Modal -->
