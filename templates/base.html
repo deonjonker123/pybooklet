@@ -5,38 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Booklet{% endblock %}</title>
     <link rel="icon" type="image/png" href="/static/favicon.png">
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/styles.css">
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     {% block extra_head %}{% endblock %}
 </head>
 <body>
-    <!-- Top Header Bar -->
-    <header class="top-header">
-        <div class="header-brand">
-            <a href="/">
-                <img src="/static/logo.png" alt="Booklet" style="height: auto; width: 128px;">
-            </a>
-        </div>
-    </header>
-
-    <!-- Main Content Area -->
-    <main class="main-content">
-        {% block content %}{% endblock %}
-    </main>
-
-    <!-- Right Sidebar Navigation -->
+    <!-- Sidebar Navigation -->
     <aside class="sidebar-nav">
+        <div class="sidebar-brand">
+            <a href="/">Booklet</a>
+            <span>Reading Log</span>
+        </div>
+
         <nav class="sidebar-menu">
             <ul class="nav-menu">
-                <li><a href="/" class="{% if request.url.path == '/' %}active{% endif %}">Dashboard</a></li>
-                <li><a href="/library" class="{% if request.url.path.startswith('/library') %}active{% endif %}">Library</a></li>
-                <li><a href="/tbr" class="{% if request.url.path.startswith('/tbr') %}active{% endif %}">TBR</a></li>
-                <li><a href="/tracker" class="{% if request.url.path.startswith('/tracker') %}active{% endif %}">Tracker</a></li>
-                <li><a href="/completed" class="{% if request.url.path.startswith('/completed') %}active{% endif %}">Completed</a></li>
-                <li><a href="/abandoned" class="{% if request.url.path.startswith('/abandoned') %}active{% endif %}">Abandoned</a></li>
-                <li><a href="/statistics" class="{% if request.url.path.startswith('/statistics') %}active{% endif %}">Statistics</a></li>
-                <li><a href="/random" class="{% if request.url.path.startswith('/random') %}active{% endif %}">Random</a></li>
+                <li><a href="/" class="{% if request.url.path == '/' %}active{% endif %}"><i class="fa fa-th-large" aria-hidden="true"></i> Dashboard</a></li>
+                <li><a href="/library" class="{% if request.url.path.startswith('/library') %}active{% endif %}"><i class="fa fa-book" aria-hidden="true"></i> Library</a></li>
+                <li><a href="/tbr" class="{% if request.url.path.startswith('/tbr') %}active{% endif %}"><i class="fa fa-bookmark" aria-hidden="true"></i> TBR</a></li>
+                <li><a href="/tracker" class="{% if request.url.path.startswith('/tracker') %}active{% endif %}"><i class="fa fa-clock-o" aria-hidden="true"></i> Tracker</a></li>
+                <li><a href="/completed" class="{% if request.url.path.startswith('/completed') %}active{% endif %}"><i class="fa fa-check" aria-hidden="true"></i> Completed</a></li>
+                <li><a href="/abandoned" class="{% if request.url.path.startswith('/abandoned') %}active{% endif %}"><i class="fa fa-times" aria-hidden="true"></i> Abandoned</a></li>
+                <li><a href="/statistics" class="{% if request.url.path.startswith('/statistics') %}active{% endif %}"><i class="fa fa-bar-chart" aria-hidden="true"></i> Statistics</a></li>
+                <li><a href="/random" class="{% if request.url.path.startswith('/random') %}active{% endif %}"><i class="fa fa-random" aria-hidden="true"></i> Random</a></li>
             </ul>
         </nav>
 
@@ -53,6 +47,11 @@
             <p>© <script>document.write(new Date().getFullYear())</script> booklet</p>
         </footer>
     </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
 
     <!-- Global Scripts -->
     <script>
