@@ -2,32 +2,90 @@
 
 {% block title %}Random Book - Booklet{% endblock %}
 
-{% block content %}
-<form id="randomFilters" class="random-filters" onsubmit="return false;">
-    <div class="sort-box">
-        <label for="randomGenre">Genre:</label>
-        <select name="genre" id="randomGenre">
-            <option value="">Any</option>
-            {% for g in genres %}
-            <option value="{{ g }}">{{ g }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="sort-box">
-        <label for="randomAuthor">Author:</label>
-        <select name="author" id="randomAuthor">
-            <option value="">Any</option>
-            {% for a in authors %}
-            <option value="{{ a }}">{{ a }}</option>
-            {% endfor %}
-        </select>
-    </div>
-</form>
+{% block extra_head %}
+<style>
+    .random-filters {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        gap: var(--spacing-lg);
+        margin: var(--spacing-xl) auto 0;
+        padding: var(--spacing-lg);
+        background: var(--bg-secondary);
+        border-radius: var(--radius-lg);
+        max-width: 560px;
+    }
 
-<div class="random-button-container">
-    <button class="btn-random" hx-post="/random/select" hx-target="#randomResult" hx-swap="innerHTML" hx-include="#randomFilters">
-        <i class="fa fa-random" aria-hidden="true"></i> Pick Random Book
-    </button>
+    .random-filter {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-xs);
+        flex: 1 1 200px;
+    }
+
+    .random-filter label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-secondary);
+    }
+
+    .random-filter select {
+        width: 100%;
+        padding: var(--spacing-sm) var(--spacing-md);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        font-size: 0.9rem;
+        background-color: var(--surface);
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+    }
+
+    .random-filter select:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="random-container">
+    <h1>Random Book Selector</h1>
+
+    <form id="randomFilters" class="random-filters" onsubmit="return false;">
+        <div class="random-filter">
+            <label for="randomGenre">Genre</label>
+            <select name="genre" id="randomGenre">
+                <option value="">Any</option>
+                {% for g in genres %}
+                <option value="{{ g }}">{{ g }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="random-filter">
+            <label for="randomAuthor">Author</label>
+            <select name="author" id="randomAuthor">
+                <option value="">Any</option>
+                {% for a in authors %}
+                <option value="{{ a }}">{{ a }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </form>
+
+    <div class="random-button-container">
+        <button class="btn-random" hx-post="/random/select" hx-target="#randomResult" hx-swap="innerHTML" hx-include="#randomFilters">
+            <i class="fa fa-random" aria-hidden="true"></i> Pick Random Book
+        </button>
+    </div>
+
+    <div id="randomResult">
+        <!-- Random book will appear here -->
+    </div>
 </div>
 
 <!-- Add to TBR Modal -->

@@ -1468,6 +1468,52 @@ p {
     margin-top: var(--spacing-lg);
 }
 
+.random-filters {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+    margin: var(--spacing-xl) auto 0;
+    padding: var(--spacing-lg);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    max-width: 560px;
+}
+
+.random-filter {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+    flex: 1 1 200px;
+}
+
+.random-filter label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+}
+
+.random-filter select {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    background-color: var(--surface);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.random-filter select:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+}
+
 /* ============================================================================
    BOOK DETAILS PAGE STYLES - DARK
    ============================================================================ */
