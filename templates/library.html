@@ -6,7 +6,7 @@
 <div class="page-container">
     <div class="page-header">
         <h1>Library</h1>
-        <button class="btn btn-primary" onclick="openModal('addBookModal')"><i class="fa fa-plus" aria-hidden="true"></i> Add Book</button>
+        <button class="btn btn-primary" onclick="openAddModal()"><i class="fa fa-plus" aria-hidden="true"></i> Add Book</button>
     </div>
 
     <!-- Search and Sort -->
@@ -171,7 +171,22 @@
             <h2>Add New Book</h2>
             <span class="close" onclick="closeModal('addBookModal')">&times;</span>
         </div>
-        <form method="post" action="/library/add">
+        <form method="post" action="/library/add" id="addBookForm">
+            <!-- Goodreads lookup -->
+            <div class="lookup-box">
+                <label for="lookupQuery">Look up on Goodreads</label>
+                <div class="lookup-row">
+                    <input type="text" id="lookupQuery" placeholder="ISBN or title" autocomplete="off">
+                    <button type="button" class="btn btn-secondary" id="lookupButton" onclick="lookupBook()">
+                        <i class="fa fa-search" aria-hidden="true"></i> Look up
+                    </button>
+                </div>
+                <p class="lookup-status" id="lookupStatus"></p>
+                <div class="lookup-results" id="lookupResults"></div>
+            </div>
+
+            <input type="hidden" id="isbn" name="isbn">
+
             <div class="form-group">
                 <label for="title">Title *</label>
                 <input type="text" id="title" name="title" required>
@@ -202,7 +217,10 @@
             </div>
             <div class="form-group">
                 <label for="cover_url">Cover URL</label>
-                <input type="url" id="cover_url" name="cover_url">
+                <div class="cover-url-row">
+                    <img id="coverPreview" class="cover-preview" alt="" hidden>
+                    <input type="url" id="cover_url" name="cover_url" oninput="updateCoverPreview()">
+                </div>
             </div>
             <div class="form-group">
                 <label for="synopsis">Synopsis</label>
@@ -328,6 +346,162 @@
         }
 
         openModal('addToTbrModal');
+    }
+
+    // ------------------------------------------------------------------------
+    // Add Book: Goodreads lookup
+    // ------------------------------------------------------------------------
+
+    function openAddModal() {
+        document.getElementById('addBookForm').reset();
+        document.getElementById('isbn').value = '';
+        document.getElementById('lookupQuery').value = '';
+        setLookupStatus('');
+        document.getElementById('lookupResults').innerHTML = '';
+        updateCoverPreview();
+        openModal('addBookModal');
+        document.getElementById('lookupQuery').focus();
+    }
+
+    // Enter in the lookup box runs the lookup instead of submitting the form
+    document.getElementById('lookupQuery').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            lookupBook();
+        }
+    });
+
+    function looksLikeIsbn(value) {
+        const digits = value.replace(/[\s-]/g, '');
+        return /^(\d{9}[\dXx]|\d{13})$/.test(digits);
+    }
+
+    function setLookupStatus(message, kind, link) {
+        const status = document.getElementById('lookupStatus');
+        status.className = 'lookup-status' + (kind ? ' lookup-status--' + kind : '');
+        status.textContent = message;
+        if (link) {
+            const a = document.createElement('a');
+            a.href = link.href;
+            a.textContent = link.text;
+            status.append(' ', a);
+        }
+    }
+
+    async function fetchJson(url) {
+        const response = await fetch(url);
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            const detail = typeof data.detail === 'string' ? data.detail : 'Lookup failed';
+            throw new Error(detail);
+        }
+        return data;
+    }
+
+    async function lookupBook() {
+        const query = document.getElementById('lookupQuery').value.trim();
+        const results = document.getElementById('lookupResults');
+        const button = document.getElementById('lookupButton');
+        if (!query) return;
+
+        results.innerHTML = '';
+        button.disabled = true;
+        setLookupStatus('Looking up on Goodreads...');
+
+        try {
+            if (looksLikeIsbn(query)) {
+                fillFromLookup(await fetchJson('/api/lookup/isbn/' + encodeURIComponent(query.replace(/[\s-]/g, ''))));
+            } else {
+                const data = await fetchJson('/api/lookup/search?q=' + encodeURIComponent(query));
+                showResults(data.items || []);
+            }
+        } catch (error) {
+            setLookupStatus(error.message, 'error');
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    function showResults(items) {
+        const results = document.getElementById('lookupResults');
+        results.innerHTML = '';
+
+        if (!items.length) {
+            setLookupStatus('No results on Goodreads.', 'error');
+            return;
+        }
+
+        setLookupStatus('Pick the right one:');
+
+        items.forEach(item => {
+            const row = document.createElement('button');
+            row.type = 'button';
+            row.className = 'lookup-result';
+
+            const cover = document.createElement('img');
+            cover.src = item.cover_url || '';
+            cover.alt = '';
+            if (!item.cover_url) cover.style.visibility = 'hidden';
+
+            const text = document.createElement('span');
+            text.className = 'lookup-result-text';
+
+            const title = document.createElement('span');
+            title.className = 'lookup-result-title';
+            title.textContent = item.title;
+
+            const meta = document.createElement('span');
+            meta.className = 'lookup-result-meta';
+            const series = item.series ? ' · ' + item.series + (item.series_number ? ' #' + item.series_number : '') : '';
+            meta.textContent = (item.author || 'Unknown author') + series + (item.published_year ? ' · ' + item.published_year : '');
+
+            text.append(title, meta);
+            row.append(cover, text);
+            row.addEventListener('click', () => pickResult(item.goodreads_url));
+            results.appendChild(row);
+        });
+    }
+
+    async function pickResult(url) {
+        const results = document.getElementById('lookupResults');
+        results.innerHTML = '';
+        setLookupStatus('Loading book details...');
+
+        try {
+            fillFromLookup(await fetchJson('/api/lookup/book?url=' + encodeURIComponent(url)));
+        } catch (error) {
+            setLookupStatus(error.message, 'error');
+        }
+    }
+
+    function fillFromLookup(book) {
+        const set = (id, value) => { document.getElementById(id).value = value ?? ''; };
+
+        set('title', book.title);
+        set('author', book.author);
+        set('series', book.series);
+        set('series_number', book.series_number);
+        set('genre', book.genre);
+        set('page_count', book.page_count);
+        set('cover_url', book.cover_url);
+        set('synopsis', book.synopsis);
+        set('isbn', book.isbn);
+        updateCoverPreview();
+
+        if (book.existing_book_id) {
+            setLookupStatus('Already in Booklet.', 'warning', { href: '/book/' + book.existing_book_id, text: 'View it' });
+        } else if (!book.page_count) {
+            setLookupStatus('Filled in from Goodreads. No page count found, so add it yourself.', 'warning');
+        } else {
+            setLookupStatus('Filled in from Goodreads. Check it over, then add.', 'success');
+        }
+    }
+
+    function updateCoverPreview() {
+        const url = document.getElementById('cover_url').value.trim();
+        const preview = document.getElementById('coverPreview');
+        preview.hidden = !url;
+        preview.src = url;
     }
 </script>
 {% endblock %}

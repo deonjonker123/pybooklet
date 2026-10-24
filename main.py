@@ -4,23 +4,19 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from typing import Optional
 import database as db
+import goodreads
+from api import router as api_router
 
 app = FastAPI(title="PYBooklet")
 
-# Mount static files
+db.ensure_schema()
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Setup templates
 templates = Jinja2Templates(directory="templates")
-
-
-# ============================================================================
-# DASHBOARD
-# ============================================================================
 
 @app.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request):
-    """Main dashboard page."""
     stats = db.get_dashboard_stats()
     currently_reading = db.get_tracked_books()
 
@@ -30,11 +26,6 @@ async def dashboard(request: Request):
         "currently_reading": currently_reading
     })
 
-
-# ============================================================================
-# LIBRARY ROUTES
-# ============================================================================
-
 @app.get("/library", response_class=HTMLResponse)
 async def library_page(
         request: Request,
@@ -43,7 +34,6 @@ async def library_page(
         sort_by: str = "date_added",
         search: Optional[str] = None
 ):
-    """Library page with all unread books."""
     offset = (page - 1) * limit
     books, total_count = db.get_all_books(limit=limit, offset=offset, sort_by=sort_by, search=search)
 
@@ -70,9 +60,16 @@ async def add_book(
         series: Optional[str] = Form(None),
         series_number: Optional[float] = Form(None),
         synopsis: Optional[str] = Form(None),
-        genre: Optional[str] = Form(None)
+        genre: Optional[str] = Form(None),
+        isbn: Optional[str] = Form(None)
 ):
-    """Add a new book to the library."""
+    isbn = goodreads.normalize_isbn(isbn) if isbn else None
+
+    if isbn:
+        existing = db.get_book_by_isbn(isbn)
+        if existing:
+            return RedirectResponse(url=f"/book/{existing['id']}", status_code=303)
+
     book_id = db.add_book(
         title=title,
         author=author,
@@ -81,7 +78,8 @@ async def add_book(
         series=series,
         series_number=series_number,
         synopsis=synopsis,
-        genre=genre
+        genre=genre,
+        isbn=isbn
     )
 
     return RedirectResponse(url="/library", status_code=303)
@@ -99,7 +97,6 @@ async def update_book(
         synopsis: Optional[str] = Form(None),
         genre: Optional[str] = Form(None)
 ):
-    """Update book details."""
     success = db.update_book(
         book_id=book_id,
         title=title,
@@ -120,7 +117,6 @@ async def update_book(
 
 @app.post("/library/read/{book_id}")
 async def move_to_tracker(book_id: int):
-    """Move a book from library to reading tracker."""
     success = db.add_to_tracker(book_id)
 
     if not success:
@@ -131,18 +127,12 @@ async def move_to_tracker(book_id: int):
 
 @app.post("/library/delete/{book_id}")
 async def delete_book(book_id: int):
-    """Permanently delete a book."""
     success = db.delete_book(book_id)
 
     if not success:
         raise HTTPException(status_code=404, detail="Book not found")
 
     return RedirectResponse(url="/library", status_code=303)
-
-
-# ============================================================================
-# LIBRARY SEARCH/FILTER (HTMX ENDPOINTS)
-# ============================================================================
 
 @app.get("/library/search", response_class=HTMLResponse)
 async def library_search(
@@ -151,7 +141,6 @@ async def library_search(
         sort_by: str = "date_added",
         limit: int = 50
 ):
-    """HTMX endpoint for real-time library search."""
     books, total_count = db.get_all_books(limit=limit, offset=0, sort_by=sort_by, search=search)
 
     return templates.TemplateResponse("partials/library_table.html", {
@@ -160,14 +149,8 @@ async def library_search(
         "total_count": total_count
     })
 
-
-# ============================================================================
-# READING TRACKER ROUTES
-# ============================================================================
-
 @app.get("/tracker", response_class=HTMLResponse)
 async def tracker_page(request: Request):
-    """Reading tracker page with currently tracked books."""
     books = db.get_tracked_books()
 
     return templates.TemplateResponse("tracker.html", {
@@ -181,7 +164,6 @@ async def update_progress(
         book_id: int,
         current_page: int = Form(...)
 ):
-    """Update the current page progress for a tracked book."""
     success = db.update_tracker_progress(book_id, current_page)
 
     if not success:
@@ -196,7 +178,6 @@ async def complete_tracked_book(
         rating: Optional[int] = Form(None),
         review: Optional[str] = Form(None)
 ):
-    """Complete a tracked book and move to completed."""
     success = db.complete_book(book_id, rating=rating, review=review)
 
     if not success:
@@ -211,7 +192,6 @@ async def abandon_tracked_book(
         page_at_abandonment: int = Form(...),
         reason: Optional[str] = Form(None)
 ):
-    """Abandon a tracked book and move to abandoned."""
     success = db.abandon_book(book_id, page_at_abandonment=page_at_abandonment, reason=reason)
 
     if not success:
@@ -222,7 +202,6 @@ async def abandon_tracked_book(
 
 @app.post("/tracker/remove/{book_id}")
 async def remove_from_tracker(book_id: int):
-    """Remove a book from tracker and return to library."""
     success = db.remove_from_tracker(book_id)
 
     if not success:
@@ -230,26 +209,16 @@ async def remove_from_tracker(book_id: int):
 
     return RedirectResponse(url="/library", status_code=303)
 
-
-# ============================================================================
-# READING SESSION ROUTES (TIMER)
-# ============================================================================
-
 @app.post("/tracker/session/start/{book_id}")
 async def start_session(
         book_id: int,
         start_time: str = Form(...),
         start_page: int = Form(...)
 ):
-    """
-    Start a reading session (called when timer modal opens).
-    This just validates the book exists - actual session saved on stop.
-    """
     book = db.get_book_by_id(book_id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
 
-    # Return success - session will be saved on stop
     return {"status": "started", "book_id": book_id}
 
 
@@ -262,8 +231,6 @@ async def stop_session(
         start_page: int = Form(...),
         end_page: int = Form(...)
 ):
-    """Stop a reading session and save it."""
-    # Save the session
     session_id = db.add_reading_session(
         book_id=book_id,
         start_time=start_time,
@@ -273,15 +240,9 @@ async def stop_session(
         end_page=end_page
     )
 
-    # Update tracker progress to end_page
     db.update_tracker_progress(book_id, end_page)
 
     return RedirectResponse(url="/tracker", status_code=303)
-
-
-# ============================================================================
-# COMPLETED BOOKS ROUTES
-# ============================================================================
 
 @app.get("/completed", response_class=HTMLResponse)
 async def completed_page(
@@ -292,11 +253,8 @@ async def completed_page(
         search: Optional[str] = None,
         rating: Optional[int] = None
 ):
-    """Completed books page."""
     offset = (page - 1) * limit
 
-    # If rating filter is applied, we need custom query
-    # For now, get all and filter in template or add to db function
     books, total_count = db.get_completed_books(
         limit=limit,
         offset=offset,
@@ -304,7 +262,6 @@ async def completed_page(
         search=search
     )
 
-    # Apply rating filter if provided
     if rating is not None:
         books = [b for b in books if b.get('rating') == rating]
         total_count = len(books)
@@ -332,8 +289,6 @@ async def update_completed_book(
         start_date: Optional[str] = Form(None),
         completion_date: Optional[str] = Form(None)
 ):
-    """Update completed book details."""
-    # Convert empty strings to None
     review = None if (review == "" or review is None) else review
     start_date = None if (start_date == "" or start_date is None) else start_date
     completion_date = None if (completion_date == "" or completion_date is None) else completion_date
@@ -354,7 +309,6 @@ async def update_completed_book(
 
 @app.post("/completed/remove/{book_id}")
 async def remove_from_completed(book_id: int):
-    """Remove a book from completed and return to library."""
     success = db.remove_from_completed(book_id)
 
     if not success:
@@ -370,7 +324,6 @@ async def completed_search(
         sort_by: str = "completion_date",
         limit: int = 50
 ):
-    """HTMX endpoint for real-time completed books search."""
     books, total_count = db.get_completed_books(
         limit=limit,
         offset=0,
@@ -384,11 +337,6 @@ async def completed_search(
         "total_count": total_count
     })
 
-
-# ============================================================================
-# ABANDONED BOOKS ROUTES
-# ============================================================================
-
 @app.get("/abandoned", response_class=HTMLResponse)
 async def abandoned_page(
         request: Request,
@@ -397,7 +345,6 @@ async def abandoned_page(
         sort_by: str = "abandonment_date",
         search: Optional[str] = None
 ):
-    """Abandoned books page."""
     offset = (page - 1) * limit
     books, total_count = db.get_abandoned_books(
         limit=limit,
@@ -428,8 +375,6 @@ async def update_abandoned_book(
         start_date: Optional[str] = Form(None),
         abandonment_date: Optional[str] = Form(None)
 ):
-    """Update abandoned book details."""
-    # Convert empty strings to None
     reason = None if (reason == "" or reason is None) else reason
     start_date = None if (start_date == "" or start_date is None) else start_date
     abandonment_date = None if (abandonment_date == "" or abandonment_date is None) else abandonment_date
@@ -450,7 +395,6 @@ async def update_abandoned_book(
 
 @app.post("/abandoned/remove/{book_id}")
 async def remove_from_abandoned(book_id: int):
-    """Remove a book from abandoned and return to library."""
     success = db.remove_from_abandoned(book_id)
 
     if not success:
@@ -466,7 +410,6 @@ async def abandoned_search(
         sort_by: str = "abandonment_date",
         limit: int = 50
 ):
-    """HTMX endpoint for real-time abandoned books search."""
     books, total_count = db.get_abandoned_books(
         limit=limit,
         offset=0,
@@ -480,44 +423,30 @@ async def abandoned_search(
         "total_count": total_count
     })
 
-
-# ============================================================================
-# SESSIONS PAGE ROUTES
-# ============================================================================
-
 @app.get("/sessions/{book_id}", response_class=HTMLResponse)
 async def sessions_page(
         request: Request,
-        book_id: int,  # Keep for URL structure, but don't use for filtering
+        book_id: int,
         week_start: Optional[str] = None,
         page: int = 1,
         limit: int = 50
 ):
-    """
-    Sessions page showing ALL reading sessions across ALL books.
-    book_id is kept in URL for consistency but data is not filtered by it.
-    """
-    from datetime import datetime, timedelta
 
-    # Get the book details (for header display only)
+    from datetime import datetime, timedelta
     book = db.get_book_by_id(book_id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
 
-    # Get book status (for header display only)
     status = db.get_book_status(book_id)
 
-    # Determine week_start (default to current week's Sunday)
     if not week_start:
         today = datetime.now()
         days_since_sunday = today.weekday() + 1 if today.weekday() != 6 else 0
         current_sunday = today - timedelta(days=days_since_sunday)
         week_start = current_sunday.date().isoformat()
 
-    # Get weekly sessions for the graph - ACROSS ALL BOOKS
     weekly_sessions = db.get_all_weekly_sessions(week_start)
 
-    # Calculate weekly stats - ALL BOOKS
     total_pages = sum(s['pages_read'] for s in weekly_sessions)
     total_duration = sum(s['duration_seconds'] for s in weekly_sessions)
     reading_days = len(set(s['session_date'] for s in weekly_sessions))
@@ -526,7 +455,6 @@ async def sessions_page(
     if total_duration > 0:
         avg_pages_per_hour = round((total_pages / total_duration) * 3600, 1)
 
-    # Get previous week stats for comparison - ALL BOOKS
     prev_week_start = (datetime.fromisoformat(week_start) - timedelta(days=7)).date().isoformat()
     prev_weekly_sessions = db.get_all_weekly_sessions(prev_week_start)
     prev_total_pages = sum(s['pages_read'] for s in prev_weekly_sessions)
@@ -536,17 +464,14 @@ async def sessions_page(
     if prev_total_duration > 0:
         prev_avg_pages_per_hour = round((prev_total_pages / prev_total_duration) * 3600, 1)
 
-    # Calculate changes
     pages_change = total_pages - prev_total_pages
     days_change = reading_days - prev_reading_days
     pace_change = round(avg_pages_per_hour - prev_avg_pages_per_hour, 1)
 
-    # Get all sessions for table (paginated) - ACROSS ALL BOOKS
     offset = (page - 1) * limit
     all_sessions, total_count = db.get_all_sessions(limit=limit, offset=offset)
     total_pages_pagination = (total_count + limit - 1) // limit
 
-    # Calculate next and previous week dates
     next_week = (datetime.fromisoformat(week_start) + timedelta(days=7)).date().isoformat()
     prev_week = prev_week_start
 
@@ -575,7 +500,6 @@ async def sessions_page(
 
 @app.post("/sessions/delete/{session_id}")
 async def delete_session(session_id: int, book_id: int = Form(...)):
-    """Delete a reading session."""
     success = db.delete_session(session_id)
 
     if not success:
@@ -583,21 +507,12 @@ async def delete_session(session_id: int, book_id: int = Form(...)):
 
     return RedirectResponse(url=f"/sessions/{book_id}", status_code=303)
 
-
-# ============================================================================
-# STATISTICS PAGE ROUTES
-# ============================================================================
-
 @app.get("/statistics", response_class=HTMLResponse)
 async def statistics_page(request: Request, year: Optional[int] = None):
-    """Statistics page with yearly and all-time stats."""
     from datetime import datetime
 
-    # Default to current year
     current_year = datetime.now().year
 
-    # If year is explicitly 0, that means "All Time"
-    # If year is None, default to current year
     if year == 0:
         selected_year = 0
     elif year is None:
@@ -605,34 +520,19 @@ async def statistics_page(request: Request, year: Optional[int] = None):
     else:
         selected_year = year
 
-    # Get stats for selected year (0 or None = all time)
     stats = db.get_year_stats(year=selected_year if selected_year != 0 else None)
 
-    # Get monthly reading data for line graph (only if not "All Time")
     monthly_data = []
     if selected_year != 0:
         monthly_data = db.get_monthly_reading_data(selected_year)
 
-    # Get top authors
     top_authors = db.get_top_authors(year=selected_year if selected_year != 0 else None)
 
-    # Get top genres
     top_genres = db.get_top_genres(year=selected_year if selected_year != 0 else None)
 
-    # Get rating distribution
     rating_dist = db.get_rating_distribution(year=selected_year if selected_year != 0 else None)
 
-    # Get available years for dropdown
-    conn = db.get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("""
-                   SELECT DISTINCT strftime('%Y', completion_date) as year
-                   FROM completed_books
-                   WHERE completion_date IS NOT NULL
-                   ORDER BY year DESC
-                   """)
-    available_years = [int(row['year']) for row in cursor.fetchall()]
-    conn.close()
+    available_years = db.get_available_years()
 
     return templates.TemplateResponse("statistics.html", {
         "request": request,
@@ -645,15 +545,8 @@ async def statistics_page(request: Request, year: Optional[int] = None):
         "top_genres": top_genres,
         "rating_dist": rating_dist
     })
-
-
-# ============================================================================
-# RANDOM BOOK PAGE ROUTES
-# ============================================================================
-
 @app.get("/random", response_class=HTMLResponse)
 async def random_book_page(request: Request):
-    """Random book selector page."""
     filter_options = db.get_random_filter_options()
 
     return templates.TemplateResponse("random.html", {
@@ -670,41 +563,11 @@ async def select_random_book(
         genre: Optional[str] = Form(None),
         author: Optional[str] = Form(None)
 ):
-    """Select a random book with smart filtering based on last completed.
-
-    A chosen genre or author overrides its matching smart rule and the page count rule.
-    """
     genre = genre or None
     author = author or None
 
-    # Get last completed book for smart rules
-    last_completed = db.get_last_completed_book()
+    book = db.pick_random_book(genre=genre, author=author)
 
-    exclude_author = None
-    exclude_genre = None
-    max_page_count = None
-
-    if last_completed:
-        # Apply smart rules, skipping any that a chosen filter overrides
-        if not author:
-            exclude_author = last_completed.get('author')
-        if not genre:
-            exclude_genre = last_completed.get('genre')
-
-        # If last book was > 800 pages, select book < 600 pages
-        if not genre and not author and last_completed.get('page_count', 0) > 800:
-            max_page_count = 600
-
-    # Get random book
-    book = db.get_random_book(
-        exclude_author=exclude_author,
-        exclude_genre=exclude_genre,
-        max_page_count=max_page_count,
-        genre=genre,
-        author=author
-    )
-
-    # Get book status if found
     status = None
     if book:
         status = db.get_book_status(book['id'])
@@ -716,23 +579,15 @@ async def select_random_book(
         "filtered": bool(genre or author)
     })
 
-
-# ============================================================================
-# BOOK DETAILS PAGE
-# ============================================================================
-
 @app.get("/book/{book_id}", response_class=HTMLResponse)
 async def book_details_page(request: Request, book_id: int):
-    """Book details page."""
     book = db.get_book_by_id(book_id)
 
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
 
-    # Get book status
     status = db.get_book_status(book_id)
 
-    # Check if book has session data
     sessions, _ = db.get_book_sessions(book_id, limit=1)
     has_sessions = len(sessions) > 0
 
@@ -742,11 +597,6 @@ async def book_details_page(request: Request, book_id: int):
         "status": status,
         "has_sessions": has_sessions
     })
-
-
-# ============================================================================
-# SERIES/AUTHOR/GENRE FILTERED PAGES
-# ============================================================================
 
 @app.get("/series/{series_name}", response_class=HTMLResponse)
 async def series_page(
@@ -758,18 +608,13 @@ async def series_page(
         year: Optional[int] = None,
         completed_only: bool = False
 ):
-    """Page showing all books in a series, optionally filtered by year for completed books."""
-    # If year is provided OR completed_only flag is set, show only completed books
     if year is not None or completed_only:
         all_books = db.get_completed_books_by_series(series_name, year=year)
-        # Add status for template
         for book in all_books:
             book['status'] = 'completed'
     else:
-        # Show all books in series across all statuses
         all_books = db.get_books_by_series(series_name)
 
-    # Apply sorting
     if sort_by == "series_number":
         all_books.sort(key=lambda x: x.get('series_number') or 0)
     elif sort_by == "title":
@@ -781,7 +626,6 @@ async def series_page(
     elif sort_by == "date_added":
         all_books.sort(key=lambda x: x.get('date_added', ''), reverse=True)
 
-    # Pagination
     total_count = len(all_books)
     total_pages = (total_count + limit - 1) // limit
     offset = (page - 1) * limit
@@ -810,18 +654,13 @@ async def author_page(
         year: Optional[int] = None,
         completed_only: bool = False
 ):
-    """Page showing all books by an author, optionally filtered by year for completed books."""
-    # If year is provided OR completed_only flag is set, show only completed books
     if year is not None or completed_only:
         all_books = db.get_completed_books_by_author(author_name, year=year)
-        # Add status for template
         for book in all_books:
             book['status'] = 'completed'
     else:
-        # Show all books by author across all statuses
         all_books = db.get_books_by_author(author_name)
 
-    # Apply sorting
     if sort_by == "title":
         all_books.sort(key=lambda x: x.get('title', ''))
     elif sort_by == "page_count":
@@ -829,7 +668,6 @@ async def author_page(
     elif sort_by == "date_added":
         all_books.sort(key=lambda x: x.get('date_added', ''), reverse=True)
 
-    # Pagination
     total_count = len(all_books)
     total_pages = (total_count + limit - 1) // limit
     offset = (page - 1) * limit
@@ -858,18 +696,13 @@ async def genre_page(
         year: Optional[int] = None,
         completed_only: bool = False
 ):
-    """Page showing all books in a genre, optionally filtered by year for completed books."""
-    # If year is provided OR completed_only flag is set, show only completed books
     if year is not None or completed_only:
         all_books = db.get_completed_books_by_genre(genre_name, year=year)
-        # Add status for template
         for book in all_books:
             book['status'] = 'completed'
     else:
-        # Show all books in genre across all statuses
         all_books = db.get_books_by_genre(genre_name)
 
-    # Apply sorting
     if sort_by == "title":
         all_books.sort(key=lambda x: x.get('title', ''))
     elif sort_by == "author":
@@ -879,7 +712,6 @@ async def genre_page(
     elif sort_by == "date_added":
         all_books.sort(key=lambda x: x.get('date_added', ''), reverse=True)
 
-    # Pagination
     total_count = len(all_books)
     total_pages = (total_count + limit - 1) // limit
     offset = (page - 1) * limit
@@ -897,23 +729,15 @@ async def genre_page(
         "year": year
     })
 
-
-# ============================================================================
-# BACKUP & RESTORE ROUTES
-# ============================================================================
-
 @app.get("/backup")
 async def backup_database():
-    """Download database backup."""
     from fastapi.responses import FileResponse
     from datetime import datetime
     import os
 
-    # Check if database exists
     if not os.path.exists(db.DATABASE_NAME):
         raise HTTPException(status_code=404, detail="Database not found")
 
-    # Create backup filename with timestamp
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     backup_filename = f"pybooklet_backup_{timestamp}.db"
 
@@ -925,7 +749,6 @@ async def backup_database():
 
 @app.get("/restore", response_class=HTMLResponse)
 async def restore_page(request: Request):
-    """Restore database page."""
     return templates.TemplateResponse("restore.html", {
         "request": request
     })
@@ -933,37 +756,25 @@ async def restore_page(request: Request):
 
 @app.post("/restore")
 async def restore_database(file: UploadFile = File(...)):
-    """Restore database from uploaded backup."""
     import shutil
     from fastapi import UploadFile, File
-
-    # Validate file extension
     if not file.filename.endswith('.db'):
         raise HTTPException(status_code=400, detail="Invalid file type. Must be a .db file")
 
-    # Create backup of current database first
     backup_path = f"{db.DATABASE_NAME}.backup_before_restore"
     shutil.copy2(db.DATABASE_NAME, backup_path)
 
     try:
-        # Write uploaded file to database location
         with open(db.DATABASE_NAME, "wb") as f:
             shutil.copyfileobj(file.file, f)
 
         return RedirectResponse(url="/?restored=true", status_code=303)
     except Exception as e:
-        # If restore fails, restore the backup
         shutil.copy2(backup_path, db.DATABASE_NAME)
         raise HTTPException(status_code=500, detail=f"Restore failed: {str(e)}")
 
-
-# ============================================================================
-# TBR LISTS ROUTES
-# ============================================================================
-
 @app.get("/tbr", response_class=HTMLResponse)
 async def tbr_lists_page(request: Request):
-    """Main TBR lists page showing all lists."""
     lists = db.get_all_tbr_lists()
 
     return templates.TemplateResponse("tbr.html", {
@@ -977,7 +788,6 @@ async def create_tbr_list(
         name: str = Form(...),
         description: Optional[str] = Form(None)
 ):
-    """Create a new TBR list."""
     list_id = db.create_tbr_list(name=name, description=description)
     return RedirectResponse(url="/tbr", status_code=303)
 
@@ -988,7 +798,6 @@ async def edit_tbr_list(
         name: str = Form(...),
         description: Optional[str] = Form(None)
 ):
-    """Edit TBR list details."""
     success = db.update_tbr_list(list_id=list_id, name=name, description=description)
 
     if not success:
@@ -999,7 +808,6 @@ async def edit_tbr_list(
 
 @app.post("/tbr/delete/{list_id}")
 async def delete_tbr_list(list_id: int):
-    """Delete a TBR list and all its book associations."""
     success = db.delete_tbr_list(list_id)
 
     if not success:
@@ -1010,13 +818,10 @@ async def delete_tbr_list(list_id: int):
 
 @app.get("/tbr/{list_id}", response_class=HTMLResponse)
 async def tbr_list_page(request: Request, list_id: int):
-    """View books in a specific TBR list."""
-    # Get list details
     tbr_list = db.get_tbr_list_by_id(list_id)
     if not tbr_list:
         raise HTTPException(status_code=404, detail="TBR list not found")
 
-    # Get books in list (no pagination, no search, no sort)
     books = db.get_books_in_tbr_list(list_id=list_id)
 
     return templates.TemplateResponse("tbr_list.html", {
@@ -1029,7 +834,6 @@ async def tbr_list_page(request: Request, list_id: int):
 
 @app.post("/tbr/{list_id}/remove/{book_id}")
 async def remove_book_from_tbr_list(list_id: int, book_id: int):
-    """Remove a book from a TBR list."""
     success = db.remove_book_from_tbr_list(book_id=book_id, list_id=list_id)
 
     if not success:
@@ -1044,20 +848,17 @@ async def add_book_to_tbr(
         list_id: int = Form(...),
         return_url: Optional[str] = Form(None)
 ):
-    """Add a book to a TBR list (or move it from another list)."""
     success = db.add_book_to_tbr_list(book_id=book_id, list_id=list_id)
 
     if not success:
         raise HTTPException(status_code=400, detail="Failed to add book to list")
 
-    # Return to the page they came from
     redirect_url = return_url if return_url else f"/book/{book_id}"
     return RedirectResponse(url=redirect_url, status_code=303)
 
 
 @app.get("/api/tbr/lists")
 async def get_tbr_lists_json():
-    """API endpoint to get all TBR lists as JSON."""
     from fastapi.responses import JSONResponse
 
     lists = db.get_all_tbr_lists()
@@ -1068,7 +869,6 @@ async def get_tbr_lists_json():
 
 @app.post("/tbr/{list_id}/move-up/{book_id}")
 async def move_book_up_in_list(list_id: int, book_id: int):
-    """Move a book up in the TBR list."""
     success = db.move_book_up(book_id=book_id, list_id=list_id)
 
     if not success:
@@ -1079,7 +879,6 @@ async def move_book_up_in_list(list_id: int, book_id: int):
 
 @app.post("/tbr/{list_id}/move-down/{book_id}")
 async def move_book_down_in_list(list_id: int, book_id: int):
-    """Move a book down in the TBR list."""
     success = db.move_book_down(book_id=book_id, list_id=list_id)
 
     if not success:
@@ -1089,7 +888,6 @@ async def move_book_down_in_list(list_id: int, book_id: int):
 
 @app.get("/tbr/book-status/{book_id}")
 async def get_book_tbr_status(book_id: int):
-    """Get which TBR list a book is currently on (for modal display)."""
     from fastapi.responses import JSONResponse
 
     tbr_list = db.get_book_tbr_list(book_id)
@@ -1098,12 +896,9 @@ async def get_book_tbr_status(book_id: int):
         "on_list": tbr_list is not None,
         "list": tbr_list
     })
-
-# ============================================================================
-# RUN APPLICATION
-# ============================================================================
+app.include_router(api_router)
 
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)

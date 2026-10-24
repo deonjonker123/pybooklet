@@ -1599,6 +1599,146 @@ select option {
 }
 
 /* ============================================================================
+   ADD BOOK: GOODREADS LOOKUP
+   ============================================================================ */
+
+.lookup-box {
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--border);
+}
+
+.lookup-box > label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.lookup-row {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.lookup-row input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.6rem var(--spacing-md);
+    background-color: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+}
+
+.lookup-row input:focus {
+    outline: none;
+    border-color: var(--accent-dim);
+}
+
+.lookup-row .btn:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+.lookup-status {
+    margin: var(--spacing-sm) 0 0;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.lookup-status:empty {
+    display: none;
+}
+
+.lookup-status--success { color: var(--positive); }
+.lookup-status--warning { color: var(--warning); }
+.lookup-status--error { color: var(--negative); }
+
+.lookup-status a {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+.lookup-results {
+    display: flex;
+    flex-direction: column;
+    max-height: 320px;
+    overflow-y: auto;
+    margin-top: var(--spacing-sm);
+}
+
+.lookup-results:empty {
+    display: none;
+}
+
+.lookup-result {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    width: 100%;
+    padding: var(--spacing-sm);
+    background: transparent;
+    border: 1px solid transparent;
+    border-bottom-color: var(--border);
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    text-align: left;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.lookup-result:hover {
+    background: var(--accent-bg);
+    border-color: var(--accent-dim);
+}
+
+.lookup-result img {
+    flex-shrink: 0;
+    width: 32px;
+    height: 48px;
+    object-fit: cover;
+    border: 1px solid var(--border);
+}
+
+.lookup-result-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.lookup-result-title {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.lookup-result-meta {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.cover-url-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.cover-url-row input {
+    flex: 1;
+}
+
+.cover-preview {
+    flex-shrink: 0;
+    width: 40px;
+    height: 60px;
+    object-fit: cover;
+    border: 1px solid var(--border);
+}
+
+/* ============================================================================
    RESPONSIVE
    ============================================================================ */
 

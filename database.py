@@ -4,21 +4,26 @@ from typing import Optional, List, Dict, Any
 
 DATABASE_NAME = "pybooklet.db"
 
-
-# ============================================================================
-# DATABASE CONNECTION
-# ============================================================================
-
 def get_db_connection():
-    """Get a database connection with row factory for dict-like access."""
     conn = sqlite3.connect(DATABASE_NAME)
     conn.row_factory = sqlite3.Row
     return conn
 
 
-# ============================================================================
-# BOOKS - CORE OPERATIONS
-# ============================================================================
+def ensure_schema():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("PRAGMA table_info(books)")
+    columns = {row["name"] for row in cursor.fetchall()}
+
+    if "isbn" not in columns:
+        cursor.execute("ALTER TABLE books ADD COLUMN isbn TEXT")
+
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_books_isbn ON books(isbn)")
+
+    conn.commit()
+    conn.close()
 
 def get_all_books(
         limit: int = 50,
@@ -26,18 +31,11 @@ def get_all_books(
         sort_by: str = "date_added",
         search: str = None
 ) -> tuple[List[Dict], int]:
-    """
-    Get all books from library (not in any other status).
-    Returns (books, total_count).
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
-
-    # Build the WHERE clause for search
     where_conditions = []
     params = []
 
-    # Exclude books that are in other states
     where_conditions.append("""
         id NOT IN (SELECT book_id FROM reading_tracker)
         AND id NOT IN (SELECT book_id FROM completed_books)
@@ -53,12 +51,10 @@ def get_all_books(
 
     where_clause = " AND ".join(where_conditions)
 
-    # Get total count
     count_query = f"SELECT COUNT(*) as count FROM books WHERE {where_clause}"
     cursor.execute(count_query, params)
     total_count = cursor.fetchone()["count"]
 
-    # Get books with sorting and pagination
     valid_sorts = {
         "author": "author",
         "title": "title",
@@ -83,7 +79,6 @@ def get_all_books(
 
 
 def get_book_by_id(book_id: int) -> Optional[Dict]:
-    """Get a single book by ID."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -102,16 +97,16 @@ def add_book(
         series: str = None,
         series_number: float = None,
         synopsis: str = None,
-        genre: str = None
+        genre: str = None,
+        isbn: str = None
 ) -> int:
-    """Add a new book to the library. Returns the book ID."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
-                   INSERT INTO books (cover_url, title, series, series_number, author, page_count, synopsis, genre)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                   """, (cover_url, title, series, series_number, author, page_count, synopsis, genre))
+                   INSERT INTO books (cover_url, title, series, series_number, author, page_count, synopsis, genre, isbn)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                   """, (cover_url, title, series, series_number, author, page_count, synopsis, genre, isbn))
 
     book_id = cursor.lastrowid
     conn.commit()
@@ -129,13 +124,11 @@ def update_book(
         series: str = None,
         series_number: float = None,
         synopsis: str = None,
-        genre: str = None
+        genre: str = None,
+        isbn: str = None
 ) -> bool:
-    """Update book details. Only updates provided fields."""
     conn = get_db_connection()
     cursor = conn.cursor()
-
-    # Build dynamic update query
     updates = []
     params = []
 
@@ -163,6 +156,9 @@ def update_book(
     if genre is not None:
         updates.append("genre = ?")
         params.append(genre)
+    if isbn is not None:
+        updates.append("isbn = ?")
+        params.append(isbn)
 
     if not updates:
         conn.close()
@@ -179,20 +175,26 @@ def update_book(
     return success
 
 
-def delete_book(book_id: int) -> bool:
-    """
-    Permanently delete a book from the database.
-    Also removes all related data (tracker, completed, abandoned, sessions, TBR).
-    """
+def get_book_by_isbn(isbn: str) -> Optional[Dict]:
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Delete from all tables
+    cursor.execute("SELECT * FROM books WHERE isbn = ?", (isbn,))
+    row = cursor.fetchone()
+
+    conn.close()
+    return dict(row) if row else None
+
+
+def delete_book(book_id: int) -> bool:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
     cursor.execute("DELETE FROM reading_sessions WHERE book_id = ?", (book_id,))
     cursor.execute("DELETE FROM reading_tracker WHERE book_id = ?", (book_id,))
     cursor.execute("DELETE FROM completed_books WHERE book_id = ?", (book_id,))
     cursor.execute("DELETE FROM abandoned_books WHERE book_id = ?", (book_id,))
-    cursor.execute("DELETE FROM tbr_list_books WHERE book_id = ?", (book_id,))  # NEW LINE
+    cursor.execute("DELETE FROM tbr_list_books WHERE book_id = ?", (book_id,))
     cursor.execute("DELETE FROM books WHERE id = ?", (book_id,))
 
     conn.commit()
@@ -201,38 +203,25 @@ def delete_book(book_id: int) -> bool:
 
     return success
 
-
-# ============================================================================
-# BOOK STATUS OPERATIONS
-# ============================================================================
-
 def get_book_status(book_id: int) -> str:
-    """
-    Get the current status of a book.
-    Returns: 'library', 'tracking', 'completed', 'abandoned', or 'unknown'
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Check if book exists
     cursor.execute("SELECT id FROM books WHERE id = ?", (book_id,))
     if not cursor.fetchone():
         conn.close()
         return "unknown"
 
-    # Check tracking
     cursor.execute("SELECT id FROM reading_tracker WHERE book_id = ?", (book_id,))
     if cursor.fetchone():
         conn.close()
         return "tracking"
 
-    # Check completed
     cursor.execute("SELECT id FROM completed_books WHERE book_id = ?", (book_id,))
     if cursor.fetchone():
         conn.close()
         return "completed"
 
-    # Check abandoned
     cursor.execute("SELECT id FROM abandoned_books WHERE book_id = ?", (book_id,))
     if cursor.fetchone():
         conn.close()
@@ -241,13 +230,7 @@ def get_book_status(book_id: int) -> str:
     conn.close()
     return "library"
 
-
-# ============================================================================
-# READING TRACKER OPERATIONS
-# ============================================================================
-
 def get_tracked_books() -> List[Dict]:
-    """Get all currently tracked books with their progress."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -268,24 +251,17 @@ def get_tracked_books() -> List[Dict]:
 
 
 def add_to_tracker(book_id: int, current_page: int = 0) -> bool:
-    """
-    Move a book from library to reading tracker.
-    Ensures book is removed from other statuses first.
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Remove from other statuses
     cursor.execute("DELETE FROM completed_books WHERE book_id = ?", (book_id,))
     cursor.execute("DELETE FROM abandoned_books WHERE book_id = ?", (book_id,))
 
-    # Check if already in tracker
     cursor.execute("SELECT id FROM reading_tracker WHERE book_id = ?", (book_id,))
     if cursor.fetchone():
         conn.close()
-        return False  # Already tracking
+        return False
 
-    # Add to tracker
     cursor.execute("""
                    INSERT INTO reading_tracker (book_id, current_page)
                    VALUES (?, ?)
@@ -298,7 +274,6 @@ def add_to_tracker(book_id: int, current_page: int = 0) -> bool:
 
 
 def update_tracker_progress(book_id: int, current_page: int) -> bool:
-    """Update the current page for a tracked book."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -316,7 +291,6 @@ def update_tracker_progress(book_id: int, current_page: int) -> bool:
 
 
 def remove_from_tracker(book_id: int) -> bool:
-    """Remove a book from tracker and return it to library."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -328,11 +302,6 @@ def remove_from_tracker(book_id: int) -> bool:
 
     return success
 
-
-# ============================================================================
-# COMPLETED BOOKS OPERATIONS
-# ============================================================================
-
 def get_completed_books(
         limit: int = 50,
         offset: int = 0,
@@ -341,10 +310,6 @@ def get_completed_books(
         year: int = None,
         rating: int = None
 ) -> tuple[List[Dict], int]:
-    """
-    Get all completed books with optional filters.
-    Returns (books, total_count).
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -368,7 +333,6 @@ def get_completed_books(
 
     where_clause = " AND ".join(where_conditions) if where_conditions else "1=1"
 
-    # Get total count
     count_query = f"""
         SELECT COUNT(*) as count 
         FROM books b
@@ -378,7 +342,6 @@ def get_completed_books(
     cursor.execute(count_query, params)
     total_count = cursor.fetchone()["count"]
 
-    # Get books
     valid_sorts = {
         "author": "b.author",
         "title": "b.title",
@@ -417,25 +380,18 @@ def complete_book(
         review: str = None,
         start_date: str = None
 ) -> bool:
-    """
-    Move a book from tracker to completed.
-    Removes from tracker and other statuses.
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Get start date from tracker if not provided
     if not start_date:
         cursor.execute("SELECT start_date FROM reading_tracker WHERE book_id = ?", (book_id,))
         row = cursor.fetchone()
         if row:
             start_date = row["start_date"]
 
-    # Remove from other statuses
     cursor.execute("DELETE FROM reading_tracker WHERE book_id = ?", (book_id,))
     cursor.execute("DELETE FROM abandoned_books WHERE book_id = ?", (book_id,))
 
-    # Add to completed
     cursor.execute("""
                    INSERT INTO completed_books (book_id, rating, review, start_date)
                    VALUES (?, ?, ?, ?)
@@ -454,14 +410,12 @@ def update_completed_book(
         start_date: str = None,
         completion_date: str = None
 ) -> bool:
-    """Update completed book details."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
     updates = []
     params = []
 
-    # ALWAYS update these fields if they're in the form submission
     updates.append("rating = ?")
     params.append(rating)
 
@@ -486,7 +440,6 @@ def update_completed_book(
 
 
 def remove_from_completed(book_id: int) -> bool:
-    """Remove a book from completed and return it to library."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -498,21 +451,12 @@ def remove_from_completed(book_id: int) -> bool:
 
     return success
 
-
-# ============================================================================
-# ABANDONED BOOKS OPERATIONS
-# ============================================================================
-
 def get_abandoned_books(
         limit: int = 50,
         offset: int = 0,
         sort_by: str = "abandonment_date",
         search: str = None
 ) -> tuple[List[Dict], int]:
-    """
-    Get all abandoned books.
-    Returns (books, total_count).
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -528,7 +472,6 @@ def get_abandoned_books(
 
     where_clause = " AND ".join(where_conditions) if where_conditions else "1=1"
 
-    # Get total count
     count_query = f"""
         SELECT COUNT(*) as count 
         FROM books b
@@ -538,7 +481,6 @@ def get_abandoned_books(
     cursor.execute(count_query, params)
     total_count = cursor.fetchone()["count"]
 
-    # Get books
     valid_sorts = {
         "author": "b.author",
         "title": "b.title",
@@ -576,25 +518,18 @@ def abandon_book(
         reason: str = None,
         start_date: str = None
 ) -> bool:
-    """
-    Move a book from tracker to abandoned.
-    Removes from tracker and other statuses.
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Get start date from tracker if not provided
     if not start_date:
         cursor.execute("SELECT start_date FROM reading_tracker WHERE book_id = ?", (book_id,))
         row = cursor.fetchone()
         if row:
             start_date = row["start_date"]
 
-    # Remove from other statuses
     cursor.execute("DELETE FROM reading_tracker WHERE book_id = ?", (book_id,))
     cursor.execute("DELETE FROM completed_books WHERE book_id = ?", (book_id,))
 
-    # Add to abandoned
     cursor.execute("""
                    INSERT INTO abandoned_books (book_id, page_at_abandonment, reason, start_date)
                    VALUES (?, ?, ?, ?)
@@ -613,14 +548,12 @@ def update_abandoned_book(
         start_date: str = None,
         abandonment_date: str = None
 ) -> bool:
-    """Update abandoned book details."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
     updates = []
     params = []
 
-    # ALWAYS update these fields
     updates.append("page_at_abandonment = ?")
     params.append(page_at_abandonment)
 
@@ -645,7 +578,6 @@ def update_abandoned_book(
 
 
 def remove_from_abandoned(book_id: int) -> bool:
-    """Remove a book from abandoned and return it to library."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -657,11 +589,6 @@ def remove_from_abandoned(book_id: int) -> bool:
 
     return success
 
-
-# ============================================================================
-# READING SESSIONS OPERATIONS
-# ============================================================================
-
 def add_reading_session(
         book_id: int,
         start_time: str,
@@ -670,10 +597,6 @@ def add_reading_session(
         start_page: int,
         end_page: int
 ) -> int:
-    """
-    Add a new reading session.
-    Returns the session ID.
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -699,14 +622,9 @@ def get_book_sessions(
         limit: int = 50,
         offset: int = 0
 ) -> tuple[List[Dict], int]:
-    """
-    Get all reading sessions for a specific book.
-    Returns (sessions, total_count).
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Get total count
     cursor.execute("""
                    SELECT COUNT(*) as count
                    FROM reading_sessions
@@ -714,7 +632,6 @@ def get_book_sessions(
                    """, (book_id,))
     total_count = cursor.fetchone()["count"]
 
-    # Get sessions
     cursor.execute("""
                    SELECT *
                    FROM reading_sessions
@@ -730,14 +647,9 @@ def get_book_sessions(
 
 
 def get_weekly_sessions(book_id: int, week_start: str) -> List[Dict]:
-    """
-    Get all sessions for a book in a specific week (Sunday to Saturday).
-    week_start should be the Sunday date in ISO format (YYYY-MM-DD).
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Calculate week end (Saturday)
     from datetime import datetime, timedelta
     start_date = datetime.fromisoformat(week_start)
     end_date = start_date + timedelta(days=6)
@@ -759,21 +671,15 @@ def get_all_sessions(
         limit: int = 50,
         offset: int = 0
 ) -> tuple[List[Dict], int]:
-    """
-    Get all reading sessions across ALL books.
-    Returns (sessions, total_count).
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Get total count
     cursor.execute("""
                    SELECT COUNT(*) as count
                    FROM reading_sessions
                    """)
     total_count = cursor.fetchone()["count"]
 
-    # Get sessions with book info
     cursor.execute("""
                    SELECT rs.*, b.title, b.author, b.cover_url
                    FROM reading_sessions rs
@@ -789,14 +695,9 @@ def get_all_sessions(
 
 
 def get_all_weekly_sessions(week_start: str) -> List[Dict]:
-    """
-    Get all sessions across ALL books in a specific week (Sunday to Saturday).
-    week_start should be the Sunday date in ISO format (YYYY-MM-DD).
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Calculate week end (Saturday)
     from datetime import datetime, timedelta
     start_date = datetime.fromisoformat(week_start)
     end_date = start_date + timedelta(days=6)
@@ -816,7 +717,6 @@ def get_all_weekly_sessions(week_start: str) -> List[Dict]:
 
 
 def delete_session(session_id: int) -> bool:
-    """Delete a reading session."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -828,17 +728,10 @@ def delete_session(session_id: int) -> bool:
 
     return success
 
-
-# ============================================================================
-# STATISTICS QUERIES
-# ============================================================================
-
 def get_dashboard_stats() -> Dict:
-    """Get quick stats for the dashboard."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Total books in library (unread)
     cursor.execute("""
                    SELECT COUNT(*) as count
                    FROM books
@@ -848,19 +741,15 @@ def get_dashboard_stats() -> Dict:
                    """)
     library_count = cursor.fetchone()["count"]
 
-    # Total books (all)
     cursor.execute("SELECT COUNT(*) as count FROM books")
     total_books = cursor.fetchone()["count"]
 
-    # Completed books
     cursor.execute("SELECT COUNT(*) as count FROM completed_books")
     completed_count = cursor.fetchone()["count"]
 
-    # Abandoned books
     cursor.execute("SELECT COUNT(*) as count FROM abandoned_books")
     abandoned_count = cursor.fetchone()["count"]
 
-    # Currently tracking
     cursor.execute("SELECT COUNT(*) as count FROM reading_tracker")
     tracking_count = cursor.fetchone()["count"]
 
@@ -876,11 +765,9 @@ def get_dashboard_stats() -> Dict:
 
 
 def get_year_stats(year: int = None) -> Dict:
-    """Get statistics for a specific year or all time."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Completed books count
     if year:
         cursor.execute("""
                        SELECT COUNT(*) as count
@@ -892,7 +779,6 @@ def get_year_stats(year: int = None) -> Dict:
 
     completed_count = cursor.fetchone()["count"]
 
-    # Pages read (from completed books only)
     if year:
         cursor.execute("""
                        SELECT COALESCE(SUM(b.page_count), 0) as total_pages
@@ -909,7 +795,6 @@ def get_year_stats(year: int = None) -> Dict:
 
     pages_read = cursor.fetchone()["total_pages"]
 
-    # Abandoned books count
     if year:
         cursor.execute("""
                        SELECT COUNT(*) as count
@@ -921,7 +806,6 @@ def get_year_stats(year: int = None) -> Dict:
 
     abandoned_count = cursor.fetchone()["count"]
 
-    # Average time to finish (in days)
     if year:
         cursor.execute("""
                        SELECT AVG(JULIANDAY(completion_date) - JULIANDAY(start_date)) as avg_days
@@ -949,8 +833,23 @@ def get_year_stats(year: int = None) -> Dict:
     }
 
 
+def get_available_years() -> List[int]:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+                   SELECT DISTINCT strftime('%Y', completion_date) as year
+                   FROM completed_books
+                   WHERE completion_date IS NOT NULL
+                   ORDER BY year DESC
+                   """)
+    years = [int(row['year']) for row in cursor.fetchall()]
+
+    conn.close()
+    return years
+
+
 def get_monthly_reading_data(year: int) -> List[Dict]:
-    """Get books and pages read per month for a given year."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -973,7 +872,6 @@ def get_monthly_reading_data(year: int) -> List[Dict]:
 
 
 def get_top_authors(year: int = None, limit: int = 10) -> List[Dict]:
-    """Get top authors by number of books completed."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1004,7 +902,6 @@ def get_top_authors(year: int = None, limit: int = 10) -> List[Dict]:
 
 
 def get_top_genres(year: int = None, limit: int = 10) -> List[Dict]:
-    """Get top genres by number of books completed."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1037,7 +934,6 @@ def get_top_genres(year: int = None, limit: int = 10) -> List[Dict]:
 
 
 def get_rating_distribution(year: int = None) -> List[Dict]:
-    """Get distribution of ratings (1-5 stars)."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1067,11 +963,6 @@ def get_rating_distribution(year: int = None) -> List[Dict]:
 
     return ratings
 
-
-# ============================================================================
-# HELPER FUNCTIONS (SERIES, AUTHOR, GENRE)
-# ============================================================================
-
 def get_books_by_series(series_name: str) -> List[Dict]:
     """Get all books in a series (across all statuses)."""
     conn = get_db_connection()
@@ -1097,7 +988,6 @@ def get_books_by_series(series_name: str) -> List[Dict]:
 
 
 def get_books_by_author(author_name: str) -> List[Dict]:
-    """Get all books by an author (across all statuses)."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1121,7 +1011,6 @@ def get_books_by_author(author_name: str) -> List[Dict]:
 
 
 def get_books_by_genre(genre_name: str) -> List[Dict]:
-    """Get all books with a specific genre (across all statuses)."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1143,11 +1032,6 @@ def get_books_by_genre(genre_name: str) -> List[Dict]:
 
     return books
 
-
-# ============================================================================
-# RANDOM BOOK SELECTOR
-# ============================================================================
-
 def get_random_book(
         exclude_author: str = None,
         exclude_genre: str = None,
@@ -1155,10 +1039,7 @@ def get_random_book(
         genre: str = None,
         author: str = None
 ) -> Optional[Dict]:
-    """
-    Get a random book from the library with optional filters.
-    Only selects from books in 'library' status (unread).
-    """
+
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1205,7 +1086,6 @@ def get_random_book(
 
 
 def get_random_filter_options() -> Dict[str, List[str]]:
-    """Get distinct genres and authors among unread library books."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1234,8 +1114,31 @@ def get_random_filter_options() -> Dict[str, List[str]]:
     return {"genres": genres, "authors": authors}
 
 
+def pick_random_book(genre: str = None, author: str = None) -> Optional[Dict]:
+    last_completed = get_last_completed_book()
+
+    exclude_author = None
+    exclude_genre = None
+    max_page_count = None
+
+    if last_completed:
+        if not author:
+            exclude_author = last_completed.get('author')
+        if not genre:
+            exclude_genre = last_completed.get('genre')
+        if not genre and not author and (last_completed.get('page_count') or 0) > 800:
+            max_page_count = 600
+
+    return get_random_book(
+        exclude_author=exclude_author,
+        exclude_genre=exclude_genre,
+        max_page_count=max_page_count,
+        genre=genre,
+        author=author
+    )
+
+
 def get_last_completed_book() -> Optional[Dict]:
-    """Get the most recently completed book."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1253,7 +1156,6 @@ def get_last_completed_book() -> Optional[Dict]:
 
 
 def get_completed_books_by_author(author_name: str, year: int = None) -> List[Dict]:
-    """Get completed books by an author, optionally filtered by year."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1286,7 +1188,6 @@ def get_completed_books_by_author(author_name: str, year: int = None) -> List[Di
 
 
 def get_completed_books_by_genre(genre_name: str, year: int = None) -> List[Dict]:
-    """Get completed books by genre, optionally filtered by year."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1319,7 +1220,6 @@ def get_completed_books_by_genre(genre_name: str, year: int = None) -> List[Dict
 
 
 def get_completed_books_by_series(series_name: str, year: int = None) -> List[Dict]:
-    """Get completed books in a series, optionally filtered by year."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1350,13 +1250,7 @@ def get_completed_books_by_series(series_name: str, year: int = None) -> List[Di
 
     return books
 
-
-# ============================================================================
-# TBR LISTS OPERATIONS
-# ============================================================================
-
 def create_tbr_list(name: str, description: str = None) -> int:
-    """Create a new TBR list. Returns the list ID."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1373,7 +1267,6 @@ def create_tbr_list(name: str, description: str = None) -> int:
 
 
 def get_all_tbr_lists() -> List[Dict]:
-    """Get all TBR lists with their book counts."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1393,7 +1286,6 @@ def get_all_tbr_lists() -> List[Dict]:
 
 
 def get_tbr_list_by_id(list_id: int) -> Optional[Dict]:
-    """Get a single TBR list by ID."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1405,7 +1297,6 @@ def get_tbr_list_by_id(list_id: int) -> Optional[Dict]:
 
 
 def update_tbr_list(list_id: int, name: str = None, description: str = None) -> bool:
-    """Update TBR list details. Only updates provided fields."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1435,14 +1326,11 @@ def update_tbr_list(list_id: int, name: str = None, description: str = None) -> 
 
 
 def delete_tbr_list(list_id: int) -> bool:
-    """Delete a TBR list and all its book associations."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Delete all book associations first
     cursor.execute("DELETE FROM tbr_list_books WHERE list_id = ?", (list_id,))
 
-    # Delete the list
     cursor.execute("DELETE FROM tbr_lists WHERE id = ?", (list_id,))
 
     conn.commit()
@@ -1453,10 +1341,6 @@ def delete_tbr_list(list_id: int) -> bool:
 
 
 def get_books_in_tbr_list(list_id: int) -> List[Dict]:
-    """
-    Get all books in a specific TBR list ordered by position.
-    Returns list of books.
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1485,17 +1369,11 @@ def get_books_in_tbr_list(list_id: int) -> List[Dict]:
 
 
 def add_book_to_tbr_list(book_id: int, list_id: int) -> bool:
-    """
-    Add a book to a TBR list.
-    If book is already on another list, removes it from that list first.
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Remove from any existing list first
     cursor.execute("DELETE FROM tbr_list_books WHERE book_id = ?", (book_id,))
 
-    # Get the next position (max position + 1)
     cursor.execute("""
                    SELECT COALESCE(MAX(position), -1) + 1 as next_pos
                    FROM tbr_list_books
@@ -1504,7 +1382,6 @@ def add_book_to_tbr_list(book_id: int, list_id: int) -> bool:
 
     next_position = cursor.fetchone()["next_pos"]
 
-    # Add to new list
     cursor.execute("""
                    INSERT INTO tbr_list_books (list_id, book_id, date_added, position)
                    VALUES (?, ?, ?, ?)
@@ -1517,11 +1394,9 @@ def add_book_to_tbr_list(book_id: int, list_id: int) -> bool:
 
 
 def move_book_up(book_id: int, list_id: int) -> bool:
-    """Move a book up in the TBR list (decrease position)."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Get current position
     cursor.execute("""
                    SELECT position
                    FROM tbr_list_books
@@ -1536,12 +1411,10 @@ def move_book_up(book_id: int, list_id: int) -> bool:
 
     current_pos = result["position"]
 
-    # Can't move up if already at position 0
     if current_pos == 0:
         conn.close()
         return False
 
-    # Get the book that's one position above
     cursor.execute("""
                    SELECT book_id
                    FROM tbr_list_books
@@ -1556,7 +1429,6 @@ def move_book_up(book_id: int, list_id: int) -> bool:
 
     above_book_id = above_book["book_id"]
 
-    # Swap positions
     cursor.execute("""
                    UPDATE tbr_list_books
                    SET position = ?
@@ -1578,11 +1450,9 @@ def move_book_up(book_id: int, list_id: int) -> bool:
 
 
 def move_book_down(book_id: int, list_id: int) -> bool:
-    """Move a book down in the TBR list (increase position)."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Get current position and max position
     cursor.execute("""
                    SELECT position
                    FROM tbr_list_books
@@ -1597,7 +1467,6 @@ def move_book_down(book_id: int, list_id: int) -> bool:
 
     current_pos = result["position"]
 
-    # Get max position in list
     cursor.execute("""
                    SELECT MAX(position) as max_pos
                    FROM tbr_list_books
@@ -1606,12 +1475,10 @@ def move_book_down(book_id: int, list_id: int) -> bool:
 
     max_pos = cursor.fetchone()["max_pos"]
 
-    # Can't move down if already at bottom
     if current_pos >= max_pos:
         conn.close()
         return False
 
-    # Get the book that's one position below
     cursor.execute("""
                    SELECT book_id
                    FROM tbr_list_books
@@ -1626,7 +1493,6 @@ def move_book_down(book_id: int, list_id: int) -> bool:
 
     below_book_id = below_book["book_id"]
 
-    # Swap positions
     cursor.execute("""
                    UPDATE tbr_list_books
                    SET position = ?
@@ -1647,7 +1513,6 @@ def move_book_down(book_id: int, list_id: int) -> bool:
     return True
 
 def remove_book_from_tbr_list(book_id: int, list_id: int) -> bool:
-    """Remove a book from a specific TBR list."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1666,10 +1531,6 @@ def remove_book_from_tbr_list(book_id: int, list_id: int) -> bool:
 
 
 def get_book_tbr_list(book_id: int) -> Optional[Dict]:
-    """
-    Check which TBR list (if any) a book is on.
-    Returns the list info or None.
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -1687,7 +1548,6 @@ def get_book_tbr_list(book_id: int) -> Optional[Dict]:
 
 
 def get_tbr_list_count(list_id: int) -> int:
-    """Get the count of books in a TBR list."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
