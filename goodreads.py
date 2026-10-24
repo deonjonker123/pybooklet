@@ -1,9 +1,15 @@
+import functools
 import html
+import http.client
 import http.cookiejar
 import json
+import os
 import re
+import subprocess
+import sys
 import threading
 import time
+import traceback
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -14,20 +20,43 @@ USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
 )
-MIN_REQUEST_INTERVAL = 2.0  # seconds between requests to Goodreads
+MIN_REQUEST_INTERVAL = 2.0
 REQUEST_TIMEOUT = 15
 
 _lock = threading.Lock()
 _last_request = 0.0
 _cache: Dict[str, Optional[Dict]] = {}
 
-_opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+_jar = http.cookiejar.CookieJar()
+_opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(_jar))
+
+BROWSER_TIMEOUT = 30
+WAF_MARKERS = ("awsWafCookieDomainList", "AwsWafIntegration", "gokuProps", "challenge.js")
 
 last_fetch: Dict = {}
 
 
 class GoodreadsError(Exception):
     """Goodreads could not be reached or returned something unusable."""
+
+
+class InvalidInput(ValueError):
+    """The ISBN or URL passed in isn't one Goodreads can look up."""
+
+
+def _report_errors(func):
+    """Turn any unexpected crash into a GoodreadsError, so the API answers with the real
+    reason instead of a bare 500. The full traceback still goes to the server console."""
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except (GoodreadsError, InvalidInput):
+            raise
+        except Exception as e:
+            traceback.print_exc()
+            raise GoodreadsError(f"Goodreads lookup crashed: {type(e).__name__}: {e}") from e
+    return wrapper
 
 def normalize_isbn(value: str) -> Optional[str]:
     if not value:
@@ -61,6 +90,15 @@ def _isbn13_check_digit(first12: str) -> str:
     total = sum(int(c) * (1 if i % 2 == 0 else 3) for i, c in enumerate(first12))
     return str((10 - total % 10) % 10)
 
+def _is_waf_challenge(status: Optional[int], headers, body: str) -> bool:
+    action = (headers.get("x-amzn-waf-action") or "").lower() if headers else ""
+    if action in ("challenge", "captcha"):
+        return True
+    if status in (202, 405) and len(body) < 20000:
+        return True
+    return len(body) < 20000 and any(m in body for m in WAF_MARKERS)
+
+
 def _fetch(url: str) -> tuple[str, str]:
 
     global _last_request
@@ -83,27 +121,123 @@ def _fetch(url: str) -> tuple[str, str]:
             with _opener.open(request, timeout=REQUEST_TIMEOUT) as response:
                 body = response.read().decode("utf-8", errors="replace")
                 final_url = response.geturl()
-                last_fetch.update({"status": response.status, "final_url": final_url, "body": body})
+                status = response.status
+                headers = response.headers
         except urllib.error.HTTPError as e:
             last_fetch.update({"status": e.code, "final_url": e.geturl()})
             if e.code == 404:
+                _last_request = time.monotonic()
                 return "", url
-            raise GoodreadsError(f"Goodreads returned HTTP {e.code}")
+            body = e.read().decode("utf-8", errors="replace") if e.fp else ""
+            if not _is_waf_challenge(e.code, e.headers, body):
+                _last_request = time.monotonic()
+                raise GoodreadsError(f"Goodreads returned HTTP {e.code}")
+            status, headers, final_url = e.code, e.headers, e.geturl()
         except urllib.error.URLError as e:
+            _last_request = time.monotonic()
             raise GoodreadsError(f"Could not reach Goodreads: {e.reason}")
-        finally:
+        except (OSError, http.client.HTTPException) as e:
+            _last_request = time.monotonic()
+            raise GoodreadsError(f"Goodreads connection failed: {type(e).__name__}: {e}")
+
+        last_fetch.update({"status": status, "final_url": final_url, "body": body})
+
+        if _is_waf_challenge(status, headers, body):
+            last_fetch["waf_challenge"] = True
+            try:
+                body, final_url = _fetch_with_browser(url)
+            finally:
+                _last_request = time.monotonic()
+            last_fetch.update({"status": "browser", "final_url": final_url, "body": body})
+        else:
             _last_request = time.monotonic()
 
     return body, final_url
 
 
+def _fetch_with_browser(url: str) -> tuple[str, str]:
+    """Run the headless-browser fetch in a child Python process. Playwright's sync API
+    can't start Chromium from inside uvicorn's worker threads on Windows, but a fresh
+    process always gets a working event loop."""
+    try:
+        result = subprocess.run(
+            [sys.executable, os.path.abspath(__file__), "--browser-fetch", url],
+            capture_output=True, text=True, encoding="utf-8", timeout=BROWSER_TIMEOUT + 60,
+        )
+    except subprocess.TimeoutExpired:
+        raise GoodreadsError("Goodreads bot check did not clear; try again later")
+    except OSError as e:
+        raise GoodreadsError(f"Could not start the browser fetch: {e}")
+
+    try:
+        data = json.loads(result.stdout.strip().splitlines()[-1])
+    except (ValueError, IndexError):
+        detail = (result.stderr or result.stdout or "").strip().splitlines()
+        raise GoodreadsError(f"Browser fetch of Goodreads failed: {detail[-1] if detail else 'no output'}")
+
+    if data.get("error"):
+        raise GoodreadsError(data["error"])
+
+    for c in data.get("cookies") or []:
+        expires = c.get("expires", -1)
+        _jar.set_cookie(http.cookiejar.Cookie(
+            0, c["name"], c["value"], None, False,
+            c["domain"], True, c["domain"].startswith("."),
+            c["path"], True, c.get("secure", False),
+            int(expires) if expires > 0 else None,
+            expires <= 0, None, None, {},
+        ))
+
+    body, final_url = data.get("body") or "", data.get("final_url") or url
+    if "/book/show/" not in final_url and "<title>Page not found" in body:
+        return "", url
+    return body, final_url
+
+
+def _browser_fetch_main(url: str) -> Dict:
+    try:
+        from playwright.sync_api import sync_playwright, Error as PlaywrightError
+    except ImportError:
+        return {"error": "Goodreads is showing a bot check that needs a browser to pass. "
+                         "Install Playwright (pip install playwright && playwright install chromium)."}
+
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            try:
+                context = browser.new_context(user_agent=USER_AGENT, locale="en-US")
+                page = context.new_page()
+                page.goto(url, wait_until="domcontentloaded", timeout=BROWSER_TIMEOUT * 1000)
+
+                body = ""
+                deadline = time.monotonic() + BROWSER_TIMEOUT
+                while time.monotonic() < deadline:
+                    try:
+                        page.wait_for_load_state("domcontentloaded")
+                        body = page.content()
+                    except PlaywrightError:
+                        body = ""
+                    if body and not any(m in body for m in WAF_MARKERS):
+                        break
+                    page.wait_for_timeout(500)
+                else:
+                    return {"error": "Goodreads bot check did not clear; try again later"}
+
+                return {"body": body, "final_url": page.url, "cookies": context.cookies()}
+            finally:
+                browser.close()
+    except Exception as e:
+        return {"error": f"Browser fetch of Goodreads failed: {e!r}"}
+
+
 def _is_book_page(url: str) -> bool:
     return "/book/show/" in urllib.parse.urlparse(url).path
 
+@_report_errors
 def lookup_isbn(isbn: str) -> Optional[Dict]:
     clean = normalize_isbn(isbn)
     if not clean:
-        raise ValueError("Not a valid ISBN")
+        raise InvalidInput("Not a valid ISBN")
 
     cache_key = f"isbn:{clean}"
     if cache_key in _cache:
@@ -149,11 +283,12 @@ def _fill_from_best_edition(book: Optional[Dict]) -> Optional[Dict]:
     return book
 
 
+@_report_errors
 def lookup_url(url: str) -> Optional[Dict]:
     if url.startswith("/"):
         url = BASE_URL + url
     if not url.startswith(BASE_URL) or not _is_book_page(url):
-        raise ValueError("Not a Goodreads book URL")
+        raise InvalidInput("Not a Goodreads book URL")
 
     url = url.split("?")[0]
     cache_key = f"url:{url}"
@@ -167,6 +302,7 @@ def lookup_url(url: str) -> Optional[Dict]:
     return book
 
 
+@_report_errors
 def search(query: str, limit: int = 10) -> List[Dict]:
     query = (query or "").strip()
     if not query:
@@ -196,25 +332,64 @@ def search(query: str, limit: int = 10) -> List[Dict]:
     return results
 
 
-def _search_result(book: Dict) -> Dict:
-    author = ((book.get("primaryContributorEdge") or {}).get("node") or {}).get("name")
+def _obj(value) -> Dict:
+    return value if isinstance(value, dict) else {}
+
+
+def _items(value) -> List:
+    return value if isinstance(value, list) else []
+
+
+RSC_REF = re.compile(r"\$[@L]?([0-9a-f]+)")
+
+
+def _rsc_rows(data: str) -> Dict[str, object]:
+    """React streams search results as numbered rows ("4c:{...}"); fields can point
+    at another row with a "$4c" string instead of holding the object itself."""
+    decoder = json.JSONDecoder()
+    rows = {}
+    for match in re.finditer(r'(?:^|\n)([0-9a-f]+):(?=[\[{])', data):
+        try:
+            rows[match.group(1)], _ = decoder.raw_decode(data, match.end())
+        except ValueError:
+            continue
+    return rows
+
+
+def _search_result(book: Dict, rows: Optional[Dict[str, object]] = None) -> Dict:
+    rows = rows or {}
+
+    def resolve(value):
+        if isinstance(value, str):
+            ref = RSC_REF.fullmatch(value)
+            if ref:
+                return rows.get(ref.group(1))
+        return value
+
+    author = _obj(resolve(_obj(resolve(book.get("primaryContributorEdge"))).get("node"))).get("name")
 
     series = None
     series_number = None
-    for entry in book.get("bookSeries") or []:
-        series = (entry.get("series") or {}).get("title")
+    for entry in _items(resolve(book.get("bookSeries"))):
+        entry = _obj(resolve(entry))
+        series = _obj(resolve(entry.get("series"))).get("title")
         series_number = _to_number(entry.get("userPosition"))
         if series:
             break
 
+    title = resolve(book.get("title"))
+    image = resolve(book.get("imageUrl"))
+    web_url = resolve(book.get("webUrl"))
+
     return {
-        "title": _clean_text(book.get("title")),
-        "author": _clean_text(author),
-        "series": _clean_text(series),
+        "title": _clean_text(title if isinstance(title, str) else None),
+        "author": _clean_text(author if isinstance(author, str) else None),
+        "series": _clean_text(series if isinstance(series, str) else None),
         "series_number": series_number,
-        "cover_url": _full_size_cover(book.get("imageUrl")) or None,
-        "published_year": _year_from_ms((book.get("details") or {}).get("publicationTime")),
-        "goodreads_url": (book.get("webUrl") or f"{BASE_URL}/book/show/{book.get('legacyId')}").split("?")[0],
+        "cover_url": _full_size_cover(image) or None,
+        "published_year": _year_from_ms(_obj(resolve(book.get("details"))).get("publicationTime")),
+        "goodreads_url": (web_url if isinstance(web_url, str) and web_url
+                          else f"{BASE_URL}/book/show/{book.get('legacyId')}").split("?")[0],
     }
 
 
@@ -226,6 +401,7 @@ def _parse_search_results(body: str, limit: int) -> List[Dict]:
         except ValueError:
             continue
     data = "".join(chunks)
+    rows = _rsc_rows(data)
 
     decoder = json.JSONDecoder()
     results = []
@@ -237,12 +413,17 @@ def _parse_search_results(body: str, limit: int) -> List[Dict]:
         except ValueError:
             continue
 
+        if not isinstance(book, dict):
+            continue
         key = book.get("legacyId") or book.get("id")
         if not book.get("title") or key in seen:
             continue
         seen.add(key)
 
-        results.append(_search_result(book))
+        result = _search_result(book, rows)
+        if not result["title"]:
+            continue
+        results.append(result)
         if len(results) >= limit:
             break
 
@@ -306,38 +487,39 @@ def _parse_next_data(next_data: Dict) -> Optional[Dict]:
     if not state:
         return None
 
-    def deref(value):
+    def deref(value) -> Dict:
         if isinstance(value, dict) and "__ref" in value:
-            return state.get(value["__ref"]) or {}
-        return value or {}
+            value = state.get(value["__ref"])
+        return _obj(value)
 
     book = None
-    for key, value in state.get("ROOT_QUERY", {}).items():
+    for key, value in _obj(state.get("ROOT_QUERY")).items():
         if key.startswith("getBookByLegacyId"):
             book = deref(value)
             break
 
     if not book:
-        candidates = [v for k, v in state.items() if k.startswith("Book:") and v.get("title")]
+        candidates = [v for k, v in state.items() if k.startswith("Book:") and _obj(v).get("title")]
         candidates.sort(key=lambda b: 0 if b.get("bookGenres") else 1)
         book = candidates[0] if candidates else None
 
     if not book:
         return None
 
-    author = deref((book.get("primaryContributorEdge") or {}).get("node")).get("name")
+    author = deref(deref(book.get("primaryContributorEdge")).get("node")).get("name")
 
     series = None
     series_number = None
-    for entry in book.get("bookSeries") or []:
+    for entry in _items(book.get("bookSeries")):
+        entry = deref(entry)
         series = deref(entry.get("series")).get("title")
         series_number = _to_number(entry.get("userPosition"))
         if series:
             break
 
     genres = []
-    for entry in book.get("bookGenres") or []:
-        name = deref(entry.get("genre")).get("name")
+    for entry in _items(book.get("bookGenres")):
+        name = deref(deref(entry).get("genre")).get("name")
         if name:
             genres.append(name)
 
@@ -347,27 +529,27 @@ def _parse_next_data(next_data: Dict) -> Optional[Dict]:
             description = book[key]
             break
 
-    details = book.get("details") or {}
+    details = _obj(book.get("details"))
     work = deref(book.get("work"))
 
     best = deref(work.get("bestBook"))
     best_url = best.get("webUrl") or (f"{BASE_URL}/book/show/{best['legacyId']}" if best.get("legacyId") else None)
     if best_url and book.get("legacyId") and str(book.get("legacyId")) in best_url:
         best_url = None
-    stats = work.get("stats") or {}
-    published = (work.get("details") or {}).get("publicationTime") or details.get("publicationTime")
+    stats = _obj(work.get("stats"))
+    published = _obj(work.get("details")).get("publicationTime") or details.get("publicationTime")
 
     return {
         "title": _clean_text(book.get("title")),
-        "author": _clean_text(author),
-        "series": _clean_text(series),
+        "author": _clean_text(author if isinstance(author, str) else None),
+        "series": _clean_text(series if isinstance(series, str) else None),
         "series_number": series_number,
         "page_count": details.get("numPages"),
         "synopsis": _html_to_text(description),
         "genre": genres[0] if genres else None,
         "genres": genres,
         "cover_url": _full_size_cover(book.get("imageUrl")),
-        "isbn": normalize_isbn(details.get("isbn13") or details.get("isbn") or ""),
+        "isbn": normalize_isbn(str(details.get("isbn13") or details.get("isbn") or "")),
         "goodreads_url": book.get("webUrl"),
         "rating": stats.get("averageRating"),
         "ratings_count": stats.get("ratingsCount"),
@@ -391,9 +573,18 @@ def _parse_json_ld(body: str) -> Optional[Dict]:
         authors = data.get("author") or []
         if isinstance(authors, dict):
             authors = [authors]
+        authors = [a for a in authors if isinstance(a, dict)]
+
+        image = data.get("image")
+        if isinstance(image, list):
+            image = image[0] if image else None
+        if isinstance(image, dict):
+            image = image.get("url")
 
         title, series, series_number = _split_series(_clean_text(data.get("name")))
-        rating = data.get("aggregateRating") or {}
+        rating = data.get("aggregateRating")
+        if not isinstance(rating, dict):
+            rating = {}
 
         return {
             "title": title,
@@ -404,8 +595,8 @@ def _parse_json_ld(body: str) -> Optional[Dict]:
             "synopsis": None,
             "genre": None,
             "genres": [],
-            "cover_url": _full_size_cover(data.get("image")),
-            "isbn": normalize_isbn(data.get("isbn") or ""),
+            "cover_url": _full_size_cover(image),
+            "isbn": normalize_isbn(str(data.get("isbn") or "")),
             "goodreads_url": None,
             "rating": rating.get("ratingValue"),
             "ratings_count": rating.get("ratingCount"),
@@ -415,14 +606,14 @@ def _parse_json_ld(body: str) -> Optional[Dict]:
     return None
 
 def _clean_text(value: Optional[str]) -> Optional[str]:
-    if not value:
+    if not value or not isinstance(value, str):
         return None
     text = html.unescape(re.sub(r"<[^>]+>", "", value))
     return re.sub(r"\s+", " ", text).strip() or None
 
 
 def _html_to_text(value: Optional[str]) -> Optional[str]:
-    if not value:
+    if not value or not isinstance(value, str):
         return None
     text = re.sub(r"<br\s*/?>", "\n", value, flags=re.I)
     text = re.sub(r"</p\s*>", "\n\n", text, flags=re.I)
@@ -442,7 +633,7 @@ def _split_series(title: Optional[str]) -> tuple[Optional[str], Optional[str], O
 
 
 def _full_size_cover(url: Optional[str]) -> Optional[str]:
-    if not url:
+    if not url or not isinstance(url, str):
         return None
     return re.sub(r"\._[A-Z0-9_,]+_(?=\.(jpg|jpeg|png|webp)$)", "", url, flags=re.I)
 
@@ -462,7 +653,9 @@ def _year_from_ms(value) -> Optional[int]:
         return None
 
 if __name__ == "__main__":
-    import sys
+    if sys.argv[1:2] == ["--browser-fetch"]:
+        print(json.dumps(_browser_fetch_main(sys.argv[2])))
+        sys.exit(0)
 
     args = [a for a in sys.argv[1:] if a != "--debug"]
     debug = "--debug" in sys.argv
@@ -490,6 +683,7 @@ if __name__ == "__main__":
         print("requested: ", last_fetch.get("url"))
         print("final url: ", last_fetch.get("final_url"))
         print("status:    ", last_fetch.get("status"))
+        print("waf check: ", bool(last_fetch.get("waf_challenge")))
         print("size:      ", len(body), "chars")
         print("next data: ", '<script id="__NEXT_DATA__"' in body)
         print("json-ld:   ", 'application/ld+json' in body)
